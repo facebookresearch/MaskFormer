@@ -7,7 +7,7 @@ All numbers were obtained on [Big Basin](https://engineering.fb.com/data-center-
 servers with 8 NVIDIA V100 GPUs & NVLink.
 
 #### How to Read the Tables
-* The "Name" column contains a link to the config file. Running `tools/train_net.py --num-gpus 8` with this config file
+* The "Name" column contains a link to the config file. Running `train_net.py --num-gpus 8` with this config file
   will reproduce the model.
 * The *model id* column is provided for ease of reference.
   To check downloaded file integrity, any model on this page contains its md5 prefix in its file name.
@@ -28,7 +28,7 @@ Note: below are available pretrained models in Detectron2 that we do not use in 
 
 #### Third-party ImageNet Pretrained Models
 
-Our paper also uses ImageNet pretrained models that are not part of Detectron2, please refer to [tools](https://github.com/bowenc0221/MaskFormer/tree/master/tools) to get those pretrained models.
+Our paper also uses ImageNet pretrained models that are not part of Detectron2, please refer to [tools](https://github.com/facebookresearch/MaskFormer/tree/master/tools) to get those pretrained models.
 
 #### License
 
