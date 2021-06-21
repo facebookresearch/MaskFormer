@@ -5,7 +5,6 @@ import logging
 import numpy as np
 import torch
 from torch.nn import functional as F
-from panopticapi.utils import rgb2id
 
 from detectron2.config import configurable
 from detectron2.data import detection_utils as utils
@@ -93,6 +92,8 @@ class MaskFormerPanopticDatasetMapper(MaskFormerSemanticDatasetMapper):
 
         # apply the same transformation to panoptic segmentation
         pan_seg_gt = transforms.apply_segmentation(pan_seg_gt)
+
+        from panopticapi.utils import rgb2id
         pan_seg_gt = rgb2id(pan_seg_gt)
 
         # Pad image and segmentation label here!
