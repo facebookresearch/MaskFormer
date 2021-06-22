@@ -72,8 +72,12 @@ class TransformerPredictor(nn.Module):
         hidden_dim = transformer.d_model
         
         self.query_embed = nn.Embedding(num_queries, hidden_dim)
-        self.input_proj = Conv2d(in_channels, hidden_dim, kernel_size=1)
-        weight_init.c2_xavier_fill(self.input_proj)
+
+        if in_channels != hidden_dim:
+            self.input_proj = Conv2d(in_channels, hidden_dim, kernel_size=1)
+            weight_init.c2_xavier_fill(self.input_proj)
+        else:
+            self.input_proj = nn.Sequential()
         self.aux_loss = deep_supervision
 
         # output FFNs

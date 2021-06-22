@@ -134,7 +134,7 @@ class BasePixelDecoder(nn.Module):
                 # Following FPN implementation, we use nearest upsampling here
                 y = cur_fpn + F.interpolate(y, size=cur_fpn.shape[-2:], mode="nearest")
                 y = output_conv(y)
-        return self.mask_features(y)
+        return self.mask_features(y), None
     
     def forward(self, features, targets=None):
         logger = logging.getLogger(__name__)
@@ -265,12 +265,14 @@ class TransformerEncoderPixelDecoder(BasePixelDecoder):
                 pos = self.pe_layer(x)
                 transformer = self.transformer(transformer, None, pos)
                 y = output_conv(transformer)
+                # save intermediate feature as input to Transformer decoder
+                transformer_encoder_features = transformer
             else:
                 cur_fpn = lateral_conv(x)
                 # Following FPN implementation, we use nearest upsampling here
                 y = cur_fpn + F.interpolate(y, size=cur_fpn.shape[-2:], mode="nearest")
                 y = output_conv(y)
-        return self.mask_features(y)
+        return self.mask_features(y), transformer_encoder_features
     
     def forward(self, features, targets=None):
         logger = logging.getLogger(__name__)

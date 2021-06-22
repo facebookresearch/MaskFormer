@@ -12,6 +12,7 @@ from detectron2.modeling import SEM_SEG_HEADS_REGISTRY
 
 from .pixel_decoder import build_pixel_decoder
 from ..transformer.transformer_predictor import TransformerPredictor
+from ..transformer.transformer_predictor_no_sa import TransformerNoSAPredictor
 
 
 @SEM_SEG_HEADS_REGISTRY.register()
@@ -96,7 +97,7 @@ class MaskFormerHead(nn.Module):
             "transformer_in_feature": cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE,
             "transformer_predictor": TransformerPredictor(
                 cfg,
-                input_shape[cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE].channels,
+                cfg.MODEL.SEM_SEG_HEAD.CONVS_DIM if cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE == "transformer_encoder" else input_shape[cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE].channels,
                 mask_classification=True
             ),
         }
@@ -105,6 +106,55 @@ class MaskFormerHead(nn.Module):
         return self.layers(features)
     
     def layers(self, features):
-        mask_features = self.pixel_decoder.forward_features(features)
-        predictions = self.predictor(features[self.transformer_in_feature], mask_features)
+        mask_features, transformer_encoder_features = self.pixel_decoder.forward_features(features)
+        if self.transformer_in_feature == "transformer_encoder":
+            assert transformer_encoder_features is not None, "Please use the TransformerEncoderPixelDecoder."
+            predictions = self.predictor(transformer_encoder_features, mask_features)
+        else:
+            predictions = self.predictor(features[self.transformer_in_feature], mask_features)
+        return predictions
+
+
+@SEM_SEG_HEADS_REGISTRY.register()
+class MaskFormerNoSAHead(MaskFormerHead):
+
+    @configurable
+    def __init__(
+        self,
+        input_shape: Dict[str, ShapeSpec],
+        **kwargs,
+    ):
+        """
+        NOTE: this interface is experimental.
+        Args:
+            input_shape: shapes (channels and stride) of the input features
+            num_classes: number of classes to predict
+            pixel_decoder: the pixel decoder module
+            loss_weight: loss weight
+            ignore_value: category id to be ignored during training.
+            transformer_predictor: the transformer decoder that makes prediction
+            transformer_in_feature: input feature name to the transformer_predictor
+        """
+        super().__init__(input_shape, **kwargs)
+
+    @classmethod
+    def from_config(cls, cfg, input_shape: Dict[str, ShapeSpec]):
+        ret = super().from_config(cfg, input_shape)
+        ret["transformer_predictor"] = TransformerNoSAPredictor(
+            cfg,
+            cfg.MODEL.SEM_SEG_HEAD.CONVS_DIM if cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE == "transformer_encoder" else input_shape[cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE].channels,
+            mask_classification=True
+        )
+        return ret
+
+    def forward(self, features):
+        return self.layers(features)
+    
+    def layers(self, features):
+        mask_features, transformer_encoder_features = self.pixel_decoder.forward_features(features)
+        if self.transformer_in_feature == "transformer_encoder":
+            assert transformer_encoder_features is not None, "Please use the TransformerEncoderPixelDecoder."
+            predictions = self.predictor(transformer_encoder_features, mask_features)
+        else:
+            predictions = self.predictor(features[self.transformer_in_feature], mask_features)
         return predictions

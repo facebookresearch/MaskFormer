@@ -104,7 +104,7 @@ class PerPixelBaselineHead(nn.Module):
             return x, {}
 
     def layers(self, features):
-        x = self.pixel_decoder.forward_features(features)
+        x, _ = self.pixel_decoder.forward_features(features)
         x = self.predictor(x)
         return x
 
@@ -190,7 +190,10 @@ class PerPixelBaselinePlusHead(PerPixelBaselineHead):
     def from_config(cls, cfg, input_shape: Dict[str, ShapeSpec]):
         ret = super().from_config(cfg, input_shape)
         ret["transformer_in_feature"] = cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE
-        in_channels = input_shape[ret["transformer_in_feature"]].channels
+        if cfg.MODEL.MASK_FORMER.TRANSFORMER_IN_FEATURE == "transformer_encoder":
+            in_channels = cfg.MODEL.SEM_SEG_HEAD.CONVS_DIM
+        else:
+            in_channels = input_shape[ret["transformer_in_feature"]].channels
         ret["transformer_predictor"] = TransformerPredictor(cfg, in_channels, mask_classification=False)
         ret["deep_supervision"] = cfg.MODEL.MASK_FORMER.DEEP_SUPERVISION
         return ret
@@ -217,8 +220,12 @@ class PerPixelBaselinePlusHead(PerPixelBaselineHead):
             return x, {}
     
     def layers(self, features):
-        mask_features = self.pixel_decoder.forward_features(features)
-        predictions = self.predictor(features[self.transformer_in_feature], mask_features)
+        mask_features, transformer_encoder_features = self.pixel_decoder.forward_features(features)
+        if self.transformer_in_feature == "transformer_encoder":
+            assert transformer_encoder_features is not None, "Please use the TransformerEncoderPixelDecoder."
+            predictions = self.predictor(transformer_encoder_features, mask_features)
+        else:
+            predictions = self.predictor(features[self.transformer_in_feature], mask_features)
         if self.deep_supervision:
             return predictions["pred_masks"], predictions["aux_outputs"]
         else:

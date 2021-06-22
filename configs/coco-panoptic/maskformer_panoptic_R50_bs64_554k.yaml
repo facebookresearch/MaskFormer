@@ -15,7 +15,7 @@ MODEL:
     PIXEL_DECODER_NAME: "TransformerEncoderPixelDecoder"
     TRANSFORMER_ENC_LAYERS: 6
   MASK_FORMER:
-    TRANSFORMER_IN_FEATURE: "res5"
+    TRANSFORMER_IN_FEATURE: "transformer_encoder"
     DEEP_SUPERVISION: True
     NO_OBJECT_WEIGHT: 0.1
     DICE_WEIGHT: 1.0
