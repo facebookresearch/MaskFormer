@@ -28,6 +28,8 @@ MODEL:
     ENC_LAYERS: 0
     DEC_LAYERS: 6
     PRE_NORM: False
+    # COCO model should not pad image
+    SIZE_DIVISIBILITY: -1
     TEST:
       # probabilistic inference
       SEMANTIC_INFERENCE_METHOD: "probabilistic"
