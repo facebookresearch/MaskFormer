@@ -7,6 +7,9 @@ import os
 
 # fmt: off
 import sys
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+# fmt: on
+
 import tempfile
 import time
 import warnings
@@ -19,11 +22,9 @@ from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.projects.deeplab import add_deeplab_config
 from detectron2.utils.logger import setup_logger
+
 from mask_former import add_mask_former_config
 from predictor import VisualizationDemo
-
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-# fmt: on
 
 
 # constants
