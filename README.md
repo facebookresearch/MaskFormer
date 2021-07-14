@@ -2,7 +2,7 @@
 
 [Bowen Cheng](https://bowenc0221.github.io/), [Alexander G. Schwing](https://alexander-schwing.de/), [Alexander Kirillov](https://alexander-kirillov.github.io/)
 
-[[`arXiv`](https://arxiv.org/)] [[`Project`](https://bowenc0221.github.io/maskformer)] [[`BibTeX`](#CitingMaskFormer)]
+[[`arXiv`](http://arxiv.org/abs/2107.06278)] [[`Project`](https://bowenc0221.github.io/maskformer)] [[`BibTeX`](#CitingMaskFormer)]
 
 <div align="center">
   <img src="https://bowenc0221.github.io/images/maskformer.png" width="100%" height="100%"/>
