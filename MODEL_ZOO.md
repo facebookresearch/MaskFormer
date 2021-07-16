@@ -381,7 +381,7 @@ All models available for download through this document are licensed under the
 <td align="center">20023</td>
 <td align="center">47.7</td>
 <td align="center">41143190_0</td>
-<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/model_final_539394.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/metrics.json">metrics</a></td>
+<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_tiny_bs64_554k/model_final_539394.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_tiny_bs64_554k/metrics.json">metrics</a></td>
 </tr>
 <!-- ROW: maskformer_panoptic_swin_small_bs64_554k -->
  <tr><td align="left"><a href="configs/coco-panoptic/swin/maskformer_panoptic_swin_small_bs64_554k.yaml">MaskFormer</a></td>
@@ -390,7 +390,7 @@ All models available for download through this document are licensed under the
 <td align="center">21620</td>
 <td align="center">49.7</td>
 <td align="center">41270920</td>
-<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/model_final_5bf6b1.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/metrics.json">metrics</a></td>
+<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_small_bs64_554k/model_final_5bf6b1.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_small_bs64_554k/metrics.json">metrics</a></td>
 </tr>
 <!-- ROW: maskformer_panoptic_swin_base_IN21k_384_bs64_554k -->
  <tr><td align="left"><a href="configs/coco-panoptic/swin/maskformer_panoptic_swin_base_IN21k_384_bs64_554k.yaml">MaskFormer</a></td>
@@ -399,7 +399,7 @@ All models available for download through this document are licensed under the
 <td align="center">24411</td>
 <td align="center">51.8</td>
 <td align="center">41260906</td>
-<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/model_final_4b7f49.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/metrics.json">metrics</a></td>
+<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_base_IN21k_384_bs64_554k/model_final_4b7f49.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_base_IN21k_384_bs64_554k/metrics.json">metrics</a></td>
 </tr>
 <!-- ROW: maskformer_panoptic_swin_large_IN21k_384_bs64_554k -->
  <tr><td align="left"><a href="configs/coco-panoptic/swin/maskformer_panoptic_swin_large_IN21k_384_bs64_554k.yaml">MaskFormer</a></td>
@@ -408,7 +408,7 @@ All models available for download through this document are licensed under the
 <td align="center">23275</td>
 <td align="center">52.7</td>
 <td align="center">43219274</td>
-<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/model_final_7505c4.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/metrics.json">metrics</a></td>
+<td align="center"><a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_large_IN21k_384_bs64_554k/model_final_7505c4.pkl">model</a>&nbsp;|&nbsp;<a href="https://dl.fbaipublicfiles.com/maskformer/panoptic-coco/maskformer_panoptic_swin_large_IN21k_384_bs64_554k/metrics.json">metrics</a></td>
 </tr>
 </tbody></table>
 
