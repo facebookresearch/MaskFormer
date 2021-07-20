@@ -61,7 +61,7 @@ Download the instance annotation from http://sceneparsing.csail.mit.edu/:
 wget http://sceneparsing.csail.mit.edu/data/ChallengeData2017/annotations_instance.tar
 ```
 
-Then, run `python tools/prepare_ade20k_pan_seg.py`, to combine semantic and instance annotations for panoptic annotations.
+Then, run `python datasets/prepare_ade20k_pan_seg.py`, to combine semantic and instance annotations for panoptic annotations.
 
 ## Expected dataset structure for [ADE20k-Full](https://groups.csail.mit.edu/vision/datasets/ADE20K/):
 ```
@@ -144,7 +144,7 @@ wget http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/cocostu
 ```
 Unzip `cocostuff-10k-v1.0.zip` and put `annotations`, `imageLists` and `images` to the correct location listed above.
 
-Generate COCO-Stuff-10k annotation by `python tools/prepare_coco_stuff_10k_v1.0_sem_seg.py`
+Generate COCO-Stuff-10k annotation by `python datasets/prepare_coco_stuff_10k_v1.0_sem_seg.py`
 
 ## Expected dataset structure for [Mapillary Vistas](https://www.mapillary.com/dataset/vistas):
 ```
