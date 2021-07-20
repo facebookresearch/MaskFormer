@@ -338,12 +338,12 @@ if __name__ == "__main__":
             os.mkdir(out_folder)
 
         # json config
-        config_file = "tools/ade20k_instance_imgCatIds.json"
+        config_file = "datasets/ade20k_instance_imgCatIds.json"
         with open(config_file) as f:
             config = json.load(f)
 
         # load catid mapping
-        mapping_file = "tools/ade20k_instance_catid_mapping.txt"
+        mapping_file = "datasets/ade20k_instance_catid_mapping.txt"
         with open(mapping_file) as f:
             map_id = {}
             for i, line in enumerate(f.readlines()):
