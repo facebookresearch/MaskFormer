@@ -6,5 +6,5 @@
   Install them together at [pytorch.org](https://pytorch.org) to make sure of this. Note, please check
   PyTorch version matches that is required by Detectron2.
 - Detectron2: follow [Detectron2 installation instructions](https://detectron2.readthedocs.io/tutorials/install.html).
-- OpenCV is optional but needed by demo and visualization
+- OpenCV is optional but needed for demo and visualization
 - `pip install -r requirements.txt`
