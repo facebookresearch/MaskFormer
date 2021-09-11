@@ -1,4 +1,4 @@
-This directory contains few tools to convert ImageNet pre-trained weights.
+This directory contains few tools for MaskFormer.
 
 * `convert-torchvision-to-d2.py`
 
@@ -28,3 +28,15 @@ python tools/convert-pretrained-swin-model-to-d2.py swin_base_patch4_window12_38
 wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_large_patch4_window12_384_22k.pth
 python tools/convert-pretrained-swin-model-to-d2.py swin_large_patch4_window12_384_22k.pth swin_large_patch4_window12_384_22k.pkl
 ```
+
+* `evaluate_pq_for_semantic_segmentation.py`
+
+Tool to evaluate PQ (PQ-stuff) for semantic segmentation predictions.
+
+Usage:
+
+```
+python tools/evaluate_pq_for_semantic_segmentation.py --dataset-name ade20k_sem_seg_val --json-file OUTPUT_DIR/inference/sem_seg_predictions.json
+```
+
+where `OUTPUT_DIR` is set in the config file.
