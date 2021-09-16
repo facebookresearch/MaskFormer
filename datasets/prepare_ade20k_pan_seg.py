@@ -213,7 +213,7 @@ PALETTE = [
     [235, 12, 255],
     [160, 150, 20],
     [0, 163, 255],
-    [140, 140, 140],
+    [140, 140, 200],
     [250, 10, 15],
     [20, 255, 0],
     [31, 255, 0],
@@ -319,6 +319,10 @@ PALETTE = [
 
 
 if __name__ == "__main__":
+    # check for unique color
+    color_palette = np.array(PALETTE)
+    assert len(np.unique(color_palette, axis=0)) == 150
+
     dataset_dir = os.getenv("DETECTRON2_DATASETS", "datasets")
 
     for name, dirname in [("train", "training"), ("val", "validation")]:
