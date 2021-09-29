@@ -22,9 +22,6 @@ MODEL:
     STRIDE_IN_1X1: False
 INPUT:
   FORMAT: "RGB"
-  These models typically produce slightly worse results than the
-  pre-trained ResNets we use in official configs, which are the
-  original ResNet models released by MSRA.
 """
 
 if __name__ == "__main__":
