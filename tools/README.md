@@ -40,3 +40,23 @@ python tools/evaluate_pq_for_semantic_segmentation.py --dataset-name ade20k_sem_
 ```
 
 where `OUTPUT_DIR` is set in the config file.
+
+* `analyze_model.py`
+
+Tool to analyze model parameters and flops.
+
+Usage for semantic segmentation:
+
+```
+python tools/analyze_model.py --num-inputs 1 --tasks flop --use-fixed-input-size --config-file CONFIG_FILE
+```
+
+Note that, for semantic segmentation, we use a dummy image with fixed size that equals to `cfg.INPUT.CROP.SIZE[0] x cfg.INPUT.CROP.SIZE[0]`.
+
+Usage for panoptic segmentation:
+
+```
+python tools/analyze_model.py --num-inputs 100 --tasks flop --config-file CONFIG_FILE
+```
+
+Note that, for panoptic segmentation, we compute the average flops over 100 real validation images.
