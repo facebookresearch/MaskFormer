@@ -8,6 +8,10 @@
   <img src="https://bowenc0221.github.io/images/maskformer.png" width="100%" height="100%"/>
 </div><br/>
 
+### Mask2Former
+Checkout [Mask2Former](https://github.com/facebookresearch/Mask2Former), a universal architecture based on MaskFormer meta-architecture that
+achieves SOTA on panoptic, instance and semantic segmentation across four popular datasets (ADE20K, Cityscapes, COCO, Mapillary Vistas).
+
 ### Features
 * Better results while being more efficient.
 * Unified view of semantic- and instance-level segmentation tasks.
@@ -49,10 +53,10 @@ However portions of the project are available under separate license terms: Swin
 If you use MaskFormer in your research or wish to refer to the baseline results published in the [Model Zoo](MODEL_ZOO.md), please use the following BibTeX entry.
 
 ```BibTeX
-@article{cheng2021maskformer,
+@inproceedings{cheng2021maskformer,
   title={Per-Pixel Classification is Not All You Need for Semantic Segmentation},
   author={Bowen Cheng and Alexander G. Schwing and Alexander Kirillov},
-  journal={arXiv},
+  journal={NeurIPS},
   year={2021}
 }
 ```
