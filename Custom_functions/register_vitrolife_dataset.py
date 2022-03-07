@@ -1,7 +1,6 @@
-from doctest import FAIL_FAST
-import numpy as np 
 import os
 import glob
+from copy import deepcopy
 from PIL import Image
 import pandas as pd
 import os
@@ -25,20 +24,22 @@ def vitrolife_dataset_function(run_mode="train", debugging=False):
         img_filename_wo_ext_parts = img_filename_wo_ext.split("_")                          # Split the filename where the _ is
         hashkey = img_filename_wo_ext_parts[0]                                              # Extract the hashkey from the filename
         well = int(img_filename_wo_ext_parts[1][1:])                                        # Extract the well from the filename
-        row = df_data.loc[hashkey,well]                                                     # Find the row of the corresponding file in the dataframe
+        row = deepcopy(df_data.loc[hashkey,well])                                           # Find the row of the corresponding file in the dataframe
         data_split = row["split"]                                                           # Find the split for the current image, i.e. either train, val or test
         if data_split != run_mode: continue                                                 # If the current image is supposed to be in another split, then continue to the next image
         mask_filename = glob.glob(os.path.join(vitrolife_dataset_filepath, 'masks',img_filename_wo_ext + '*'))  # Find the corresponding mask filename
         if len(mask_filename) != 1: continue                                                # Continue only if we find only one mask filename
         mask_filename = os.path.basename(mask_filename[0])                                  # Extract the mask filename from the list
-        width_img, height_img = Image.open(os.path.join(vitrolife_dataset_filepath, "raw_images", img_filename)).size   # Get the image size of the img_file
-        width_mask, height_mask = Image.open(os.path.join(vitrolife_dataset_filepath, "masks", mask_filename)).size     # Get the mask size of the mask_file
+        row["img_file"] = os.path.join(vitrolife_dataset_filepath, "raw_images", img_filename)  # Add the current filename for the input image to the row-variable
+        row["mask_file"] = os.path.join(vitrolife_dataset_filepath, "masks", mask_filename) # Add the current filename for the semantic segmentation ground truth mask to the row-variable
+        width_img, height_img = Image.open(row["img_file"]).size                            # Get the image size of the img_file
+        width_mask, height_mask = Image.open(row["mask_file"]).size                         # Get the size of the ground truth mask
         if not all([width_img==width_mask, height_img==height_mask]): continue              # The image and mask have to be of the same size
-        current_pair = {"file_name": os.path.join(vitrolife_dataset_filepath, "raw_images", img_filename),      # Initiate the dict of the current image with the full filepath + filename
+        current_pair = {"file_name": row["img_file"],                                       # Initiate the dict of the current image with the full filepath + filename
                         "height": height_img,                                               # Write the image height
                         "width": width_img,                                                 # Write the image width
                         "image_id": img_filename_wo_ext,                                    # A unique key for the current image
-                        "sem_seg_file_name": os.path.join(vitrolife_dataset_filepath, "masks", mask_filename),  # The full filepath + filename for the mask ground truth label image
+                        "sem_seg_file_name": row["mask_file"],                              # The full filepath + filename for the mask ground truth label image
                         "image_custom_info": row}                                           # Add all the info from the current row to the dataset
         img_mask_pair_list.append(current_pair)                                             # Append the dictionary for the current pair to the list of images for the given dataset
         count += 1                                                                          # Increase the sample counter 

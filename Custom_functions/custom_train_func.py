@@ -227,8 +227,6 @@ def setup(args):
     Create configs and perform basic setups.
     """
     cfg = args.config                           # Create the custom config as an independent file
-    # delattr(FLAGS, "config")                    # Delete the custom config from the namespace variable again
-    cfg.freeze()                                # Freeze the config, i.e. make it read-only
     default_setup(cfg, args)
     # Setup logger for "mask_former" module
     setup_logger(output=cfg.OUTPUT_DIR, distributed_rank=comm.get_rank(), name="mask_former")
