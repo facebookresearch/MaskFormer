@@ -1,4 +1,5 @@
 import os                                                                                   # Used to navigate around the current os and folder structure
+from sys import path as sys_PATH                                                            # Used to get the system PATH variable
 from register_vitrolife_dataset import register_vitrolife_data_and_metadata_func            # Import function to register the vitrolife datasets in Detectron2 
 from detectron2.data import MetadataCatalog                                                 # Catalog containing metadata for all datasets available in Detectron2
 from detectron2.config import get_cfg                                                       # Function to get the default configuration from Detectron2
@@ -21,16 +22,12 @@ def accumulate_keys(dct):
 # Define a function to create a custom configuration in the chosen config_dir and takes a namespace option
 def createVitrolifeConfiguration(FLAGS=Namespace()):
     # Register the vitrolife datasets
-    register_vitrolife_data_and_metadata_func()
+    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)
     assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"
 
 
     # Locate the folder containing other configurations
-    MaskFormer_dir = os.path.join("C:\\", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")
-    if not os.path.isdir(MaskFormer_dir):
-        MaskFormer_dir = os.path.join("/mnt", "c", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")
-    if not os.path.isdir(MaskFormer_dir):
-        MaskFormer_dir = os.path.join("/mnt", "home_shared", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")
+    MaskFormer_dir = [x for x in sys_PATH if x.endswith("MaskFormer")][0]
     config_folder = os.path.join(MaskFormer_dir, "configs", "ade20k-150")
 
     # Get all keys from the FLAGS input argument

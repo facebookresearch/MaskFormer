@@ -1,20 +1,20 @@
 # Add the MaskFormer directory to PATH
 import os                                                                   # Used to navigate the folder structure in the current os
 import sys                                                                  # Used to control the PATH variable
-MaskFormer_dir = os.path.join("C:\\", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")
-if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "c", MaskFormer_dir.split(os.path.sep, 1)[1])
-if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")
-if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "home_shared", MaskFormer_dir.split(os.path.sep, 1)[1])
+MaskFormer_dir = os.path.join("C:\\", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")                                                                       # Home windows computer
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "c", MaskFormer_dir.split(os.path.sep, 1)[1])                                                   # Home WSL
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")      # Larac server
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "home_shared", MaskFormer_dir.split(os.path.sep, 1)[1])                                         # Balder server
 assert os.path.isdir(MaskFormer_dir), "The MaskFormer directory doesn't exist in the chosen location"
 sys.path.append(MaskFormer_dir)                                             # Add MaskFormer directory to PATH
 sys.path.append(os.path.join(MaskFormer_dir, "Custom_functions"))           # Add Custom_functions directory to PATH
 sys.path.append(os.path.join(MaskFormer_dir, "tools"))                      # Add the tools directory to PATH
 
 # Add the environmental variable DETECTRON2_DATASETS
-dataset_dir = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")
-if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "c", dataset_dir.split(os.path.sep,1)[1])
-if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")
-if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "home_shared", dataset_dir.split(os.path.sep, 1)[1])
+dataset_dir = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")                      # Home windows computer
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "c", dataset_dir.split(os.path.sep,1)[1])                                                             # Home WSL
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")                              # Larac server
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "home_shared", dataset_dir.split(os.path.sep, 1)[1])                                                  # Balder server
 assert os.path.isdir(dataset_dir), "The dataset directory doesn't exist in the chosen location"
 os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
@@ -52,15 +52,16 @@ def main(FLAGS):
 if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
-    parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model")
-    parser.add_argument("--max_iter", type=int, default=int(1e1), help="Maximum number of iterations to train the model for")
-    parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images")
-    parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images")
-    parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone")
-    parser.add_argument("--batch_size", type=int, default=1, help="The batch size used for training the model")
-    parser.add_argument("--learning_rate", type=float, default=1e-4, help="The initial learning rate used for training the model")
-    parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images")
-    parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts")
+    parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
+    parser.add_argument("--max_iter", type=int, default=int(1e1), help="Maximum number of iterations to train the model for. Default: 10")
+    parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
+    parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
+    parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
+    parser.add_argument("--batch_size", type=int, default=1, help="The batch size used for training the model. Default: 1")
+    parser.add_argument("--learning_rate", type=float, default=1e-4, help="The initial learning rate used for training the model. Default 1e-4")
+    parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
+    parser.add_argument("--display_images", type=str2bool, default=False, help="Whether or not some random sample images are displayed before training starts. Default: False")
+    parser.add_argument("--debugging", type=str2bool, default=False, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(FLAGS)

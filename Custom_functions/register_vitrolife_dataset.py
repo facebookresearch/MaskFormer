@@ -1,3 +1,4 @@
+from doctest import FAIL_FAST
 import numpy as np 
 import os
 import glob
@@ -7,16 +8,10 @@ import os
 from detectron2.data import DatasetCatalog, MetadataCatalog
 
 # Define the function to return the list of dictionaries with information regarding all images available in the vitrolife dataset
-def vitrolife_dataset_function(run_mode="train"):
+def vitrolife_dataset_function(run_mode="train", debugging=False):
     # Find the folder containing the vitrolife dataset
-    vitrolife_dataset_filepath = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet",
-                "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets", "Vitrolife_dataset")
-    if not os.path.isdir(vitrolife_dataset_filepath): vitrolife_dataset_filepath = os.path.join("/mnt", "c", "Users", "Nico-",
-                "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets", "Vitrolife_dataset")
-    if not os.path.isdir(vitrolife_dataset_filepath): vitrolife_dataset_filepath = os.path.join("/mnt", "home_shared", "neal",
-                "Panoptic_segmentation_using_deep_neural_networks", "Datasets", "Vitrolife_dataset")
-    os.environ["DETECTRON2_DATASETS"] = os.path.dirname(vitrolife_dataset_filepath)
-
+    vitrolife_dataset_filepath = os.path.join(os.environ["DETECTRON2_DATASETS"], "Vitrolife_dataset")
+    
     # Find the metadata file
     metadata_file = os.path.join(vitrolife_dataset_filepath, "metadata.csv")
     df_data = pd.read_csv(metadata_file)
@@ -47,18 +42,18 @@ def vitrolife_dataset_function(run_mode="train"):
                         "image_custom_info": row}                                           # Add all the info from the current row to the dataset
         img_mask_pair_list.append(current_pair)                                             # Append the dictionary for the current pair to the list of images for the given dataset
         count += 1                                                                          # Increase the sample counter 
-        # if count >= 20: break                                                             # When debugging, we will only use 20 samples in both train, val and test
+        if count >= 20 and debugging==True: break                                           # When debugging, we will only use 20 samples in both train, val and test
     
     assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
     return img_mask_pair_list
 
 # Function to register the dataset and the meta dataset for each of the three splits, [train, val, test]
-def register_vitrolife_data_and_metadata_func():
+def register_vitrolife_data_and_metadata_func(debugging=False):
     class_labels = ["Background", "Well", "Zona", "Perivitelline space", "Cell", "PN"]
     stuff_id = {ii: ii for ii in range(len(class_labels))}
     stuff_colors = [(0,0,0), (255,0,0), (0,255,0), (0,0,255), (255,255,0), (0,255,255)]
     for split_mode in ["train", "val", "test"]:
-        DatasetCatalog.register("vitrolife_dataset_{:s}".format(split_mode), lambda split_mode=split_mode: vitrolife_dataset_function(run_mode=split_mode))
+        DatasetCatalog.register("vitrolife_dataset_{:s}".format(split_mode), lambda split_mode=split_mode: vitrolife_dataset_function(run_mode=split_mode, debugging=debugging))
         MetadataCatalog.get("vitrolife_dataset_{:s}".format(split_mode)).set(stuff_classes=class_labels,
                                                                             stuff_colors = stuff_colors,
                                                                             stuff_dataset_id_to_contiguous_id = stuff_id,
