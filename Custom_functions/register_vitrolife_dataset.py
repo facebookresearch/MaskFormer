@@ -57,7 +57,7 @@ def register_vitrolife_data_and_metadata_func(debugging=False):
         MetadataCatalog.get("vitrolife_dataset_{:s}".format(split_mode)).set(stuff_classes=class_labels,
                                                                             stuff_colors = stuff_colors,
                                                                             stuff_dataset_id_to_contiguous_id = stuff_id,
-                                                                            ignore_label=255,
+                                                                            ignore_label=300,
                                                                             evaluator_type=["sem_seg"])
 
 # Test that the function will actually return a list of dicts
