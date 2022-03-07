@@ -4,7 +4,7 @@ import sys                                                                  # Us
 MaskFormer_dir = os.path.join("C:\\", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")                                                                       # Home windows computer
 if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "c", MaskFormer_dir.split(os.path.sep, 1)[1])                                                   # Home WSL
 if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")      # Larac server
-if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "home_shared", MaskFormer_dir.split(os.path.sep, 1)[1])                                         # Balder server
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "home_shared", MaskFormer_dir.split(os.path.sep, 2)[2])                                         # Balder server
 assert os.path.isdir(MaskFormer_dir), "The MaskFormer directory doesn't exist in the chosen location"
 sys.path.append(MaskFormer_dir)                                             # Add MaskFormer directory to PATH
 sys.path.append(os.path.join(MaskFormer_dir, "Custom_functions"))           # Add Custom_functions directory to PATH
