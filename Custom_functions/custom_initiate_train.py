@@ -50,10 +50,10 @@ def main(FLAGS):
     # Visualize some random images
     if FLAGS.display_images:
         fig = visualize_the_images(num_images=4, position=[0.55, 0.08, 0.40, 0.75])
+        fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples.jpg"), bbox_inches="tight")   # Save the figure
 
     # Train the model
     launch_custom_training(args=FLAGS, config=cfg)
-
 
 
 # Running the main function
@@ -61,14 +61,15 @@ if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model")
-    parser.add_argument("--max_iter", type=int, default=int(1e2), help="Maximum number of iterations to train the model for")
+    parser.add_argument("--max_iter", type=int, default=int(1e1), help="Maximum number of iterations to train the model for")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone")
     parser.add_argument("--batch_size", type=int, default=1, help="The batch size used for training the model")
     parser.add_argument("--learning_rate", type=float, default=1e-4, help="The initial learning rate used for training the model")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images")
-    parser.add_argument("--display_images", type=str2bool, default=False, help="Whether or not some random sample images are displayed before training starts")
+    parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts")
     # Parse the arguments into a Namespace variable
-    FLAGS = main(parser.parse_args())
+    FLAGS = parser.parse_args()
+    FLAGS = main(FLAGS)
 

@@ -45,13 +45,13 @@ def visualize_the_images(data_split="train", num_images=5, figsize=(16, 8), posi
         # Plot the image
         img = cv2.cvtColor(cv2.imread(data_dict["file_name"], cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
         plt.subplot(num_rows, num_cols, img_idx+1)
-        plt.title("Image #{} from {:s} split".format(img_idx+1, data_split))
+        plt.title("Image #{} from {:s} split with {:.0f} PN".format(img_idx+1, data_split, data_dict["image_custom_info"]["PN_image"]))
         plt.imshow(img, cmap="gray")
         plt.axis("off")
         # Plot the mask
         mask = cv2.imread(data_dict["sem_seg_file_name"], cv2.IMREAD_GRAYSCALE)
         plt.subplot(num_rows, num_cols, num_cols+img_idx+1)
-        plt.title("Mask #{} from {:s} split".format(img_idx+1, data_split))
+        plt.title("Mask #{} from {:s} split with {:.0f} PN".format(img_idx+1, data_split, data_dict["image_custom_info"]["PN_image"]))
         plt.imshow(apply_colormap(mask, split=data_split), cmap="gray")
         plt.axis("off")
     try: fig = move_figure_position(fig=fig, position=position)

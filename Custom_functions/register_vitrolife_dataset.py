@@ -43,10 +43,11 @@ def vitrolife_dataset_function(run_mode="train"):
                         "height": height_img,                                               # Write the image height
                         "width": width_img,                                                 # Write the image width
                         "image_id": img_filename_wo_ext,                                    # A unique key for the current image
-                        "sem_seg_file_name": os.path.join(vitrolife_dataset_filepath, "masks", mask_filename)}  # The full filepath + filename for the mask ground truth label image
+                        "sem_seg_file_name": os.path.join(vitrolife_dataset_filepath, "masks", mask_filename),  # The full filepath + filename for the mask ground truth label image
+                        "image_custom_info": row}                                           # Add all the info from the current row to the dataset
         img_mask_pair_list.append(current_pair)                                             # Append the dictionary for the current pair to the list of images for the given dataset
-        count += 1
-        if count >= 50: break                                                               # When debugging, we will only use 50 samples in both train, val and test
+        count += 1                                                                          # Increase the sample counter 
+        # if count >= 20: break                                                             # When debugging, we will only use 20 samples in both train, val and test
     
     assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
     return img_mask_pair_list
