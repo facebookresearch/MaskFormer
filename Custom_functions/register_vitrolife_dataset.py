@@ -46,7 +46,7 @@ def vitrolife_dataset_function(run_mode="train"):
                         "sem_seg_file_name": os.path.join(vitrolife_dataset_filepath, "masks", mask_filename)}  # The full filepath + filename for the mask ground truth label image
         img_mask_pair_list.append(current_pair)                                             # Append the dictionary for the current pair to the list of images for the given dataset
         count += 1
-        if count >= 15: break                                                               # When debugging, we will only use 15 samples in both train, val and test
+        if count >= 50: break                                                               # When debugging, we will only use 50 samples in both train, val and test
     
     assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
     return img_mask_pair_list
@@ -61,7 +61,7 @@ def register_vitrolife_data_and_metadata_func():
         MetadataCatalog.get("vitrolife_dataset_{:s}".format(split_mode)).set(stuff_classes=class_labels,
                                                                             stuff_colors = stuff_colors,
                                                                             stuff_dataset_id_to_contiguous_id = stuff_id,
-                                                                            # ignore_label=[],
+                                                                            ignore_label=255,
                                                                             evaluator_type=["sem_seg"])
 
 # Test that the function will actually return a list of dicts

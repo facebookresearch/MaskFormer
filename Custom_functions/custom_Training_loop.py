@@ -11,16 +11,17 @@ sys.path.append(os.path.join(MaskFormer_dir, "Custom_functions"))           # Ad
 sys.path.append(os.path.join(MaskFormer_dir, "tools"))                      # Add the tools directory to PATH
 
 dataset_dirs = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")
-os.path.environ["DETECTRON2_DATASETS"] = dataset_dirs
+if not os.path.isdir(dataset_dirs): dataset_dirs = os.path.join("/mnt", "c", dataset_dirs.split(os.path.sep,1)[1])
+os.environ["DETECTRON2_DATASETS"] = dataset_dirs
 
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import DefaultTrainer, default_argument_parser       # Default training loop and default argument_parser object
-from detectron2.data import build_detection_train_loader, DatasetCatalog, DatasetMapper    # Create a dataloader 
+from detectron2.data import build_detection_train_loader, DatasetCatalog    # Function to build training_dataloader and the catalog of datasets
 from detectron2.modeling import build_model                                 # Used to build a model that can be used for anything, directly from a configuration file
 from detectron2.solver.build import build_lr_scheduler, build_optimizer     # Functions to build lr_scheduler and optimizer
-from detectron2.engine import default_setup, launch
+from train_net import launch_custom_training
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
 
 
@@ -67,7 +68,9 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=1e-4, help="The initial learning rate used for training the model")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images")
     parser.add_argument("--display_images", type=str2bool, default=False, help="Whether or not some random sample images are displayed before training starts")
-    FLAGS = main(parser.parse_args())
+    FLAGS =  parser.parse_args()
+
+    launch_custom_training(FLAGS)
 
     # Launc the main function
     launch(
