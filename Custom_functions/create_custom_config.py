@@ -38,6 +38,7 @@ def createVitrolifeConfiguration(FLAGS):
     cfg = get_cfg()                                                                         # Get the default configuration from detectron2.
     add_deeplab_config(cfg)                                                                 # Add some deeplab (i.e. sem_seg) config values
     add_mask_former_config(cfg)                                                             # Add some default values used for semantic segmentation to the config and choose datasetmapper
+    cfg.merge_from_file(os.path.join(config_folder, "swin", "maskformer_swin_small_bs16_160k.yaml"))    # Merge with the config for the small swin transformer
     cfg.merge_from_file(os.path.join(config_folder, "maskformer_R50_bs16_160k.yaml"))       # Merge with the small maskformer config
     cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset
     cfg["DATASETS"]["TRAIN"] = ("vitrolife_dataset_train",)                                 # Define the training dataset by using the config as a dictionary
@@ -53,6 +54,8 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.MODEL.SEM_SEG_HEAD.NUM_CLASSES = len(MetadataCatalog["vitrolife_dataset_train"].stuff_classes)  # Assign the number of classes for the model to segment
     cfg.MODEL.RESNETS.DEPTH = FLAGS.Resnet_Depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
     cfg.MODEL.WEIGHTS = FLAGS.Model_weights if "MODEL_WEIGHTS" in key_list else ""          # Whether or not to start with randomly initialized weights or just a earlier checkpoint
+    cfg.MODEL.PIXEL_MEAN = [100.15, 102.03, 103.89]                                         # Write the correct image mean value for the entire vitrolife dataset
+    cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                             # Write the correct image standard deviation value for the entire vitrolife dataset
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
     os.makedirs(os.path.join(Path(config_folder).parents[1], "output_vitrolife"), exist_ok=True)    # Create the output folder, if it doesn't already exist
     cfg.OUTPUT_DIR = os.path.join(Path(config_folder).parents[1], "output_vitrolife")       # Get second parent directory to config_folder, i.e. MaskFormer folder and create an output directory

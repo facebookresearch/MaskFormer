@@ -47,7 +47,7 @@ def main(FLAGS):
     # Train the model
     launch_custom_training(args=FLAGS, config=cfg)
 
-    # Visualize the same images, now with a trained model
+    # Visualize the same images, now with a trained model, that should update the model weights according to the config...
     fig, filename_dict = visualize_the_images(config=cfg, num_images=FLAGS.num_images, position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
     fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_after_training.jpg"), bbox_inches="tight")   # Save the figure
     if FLAGS.display_images: fig.show()
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(2e1), help="Maximum number of iterations to train the model for. Default: 10")
+    parser.add_argument("--max_iter", type=int, default=int(3e1), help="Maximum number of iterations to train the model for. Default: 10")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
@@ -72,4 +72,6 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
     FLAGS = main(FLAGS)
 
-# TODO: [PS-7] Create function to evaluate training results 
+
+# TODO: [PS-7] Create predictor to evaluate training results 
+# TODO: [PS-10] => Implement something with the script checking available GPU's and select only the one with the largest memory left
