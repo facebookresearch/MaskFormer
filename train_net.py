@@ -4,7 +4,6 @@ MaskFormer Training Script.
 
 This script is a simplified version of the training script in detectron2/tools.
 """
-from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 import copy
 import itertools
 import logging
@@ -60,9 +59,6 @@ class Trainer(DefaultTrainer):
             output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
         evaluator_list = []
         evaluator_type = MetadataCatalog.get(dataset_name).evaluator_type
-        if isinstance(evaluator_type, list): 
-            if len(evaluator_type) == 1:
-                evaluator_type = evaluator_type[0]
         if evaluator_type in ["sem_seg", "ade20k_panoptic_seg"]:
             evaluator_list.append(
                 SemSegEvaluator(
@@ -229,7 +225,12 @@ def setup(args):
     """
     Create configs and perform basic setups.
     """
-    cfg = args.config
+    cfg = get_cfg()
+    # for poly lr schedule
+    add_deeplab_config(cfg)
+    add_mask_former_config(cfg)
+    cfg.merge_from_file(args.config_file)
+    cfg.merge_from_list(args.opts)
     cfg.freeze()
     default_setup(cfg, args)
     # Setup logger for "mask_former" module
@@ -257,10 +258,9 @@ def main(args):
     return trainer.train()
 
 
-# Function to launch the training
-def launch_custom_training(args, config):
+if __name__ == "__main__":
+    args = default_argument_parser().parse_args()
     print("Command Line Args:", args)
-    args.config = config
     launch(
         main,
         args.num_gpus,

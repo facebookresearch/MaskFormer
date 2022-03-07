@@ -6,8 +6,6 @@ from detectron2.projects.deeplab import add_deeplab_config                      
 import torch                                                                                # torch is implemented to check if a GPU is available
 from mask_former import add_mask_former_config                                              # Used to add the new configuration to the list of possible configurations
 from pathlib import Path                                                                    # Used to get parent folders and determine output folder for training
-import yaml                                                                                 # Used to read the yaml file
-from detectron2.config import CfgNode as CN                                                 # Used to read the configs directly from the yaml file
 class Namespace(object): pass                                                               # Used to pass the FLAG argument as an empty namespace
 
 # Define function to get all keys in a nested dictionary
@@ -34,7 +32,6 @@ def createVitrolifeConfiguration(FLAGS=Namespace()):
     if not os.path.isdir(MaskFormer_dir):
         MaskFormer_dir = os.path.join("/mnt", "home_shared", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")
     config_folder = os.path.join(MaskFormer_dir, "configs", "ade20k-150")
-    FLAGS = Namespace()
 
     # Get all keys from the FLAGS input argument
     key_list = accumulate_keys(vars(FLAGS))
@@ -48,8 +45,6 @@ def createVitrolifeConfiguration(FLAGS=Namespace()):
     cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset
     cfg["DATASETS"]["TRAIN"] = ("vitrolife_dataset_train",)                                 # Define the training dataset by using the config as a dictionary
     cfg.DATASETS.TEST = ("vitrolife_dataset_val",)                                          # Define the validation dataset by using the config as a CfgNode 
-    # cfg["DATASETS"]["TRAIN"] = ("ade20k_sem_seg_train",)
-    # cfg.DATASETS.TEST = ("ade20k_sem_seg_val",)
     cfg.DATALOADER.NUM_WORKERS = FLAGS.Num_workers if "NUM_WORKERS" in key_list else 2      # Set the number of workers to only 2
     cfg.INPUT.CROP.ENABLED =  FLAGS.Crop_Enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
     cfg.INPUT.FORMAT = "RGB"                                                                # The input format is set to be RGB
@@ -66,11 +61,11 @@ def createVitrolifeConfiguration(FLAGS=Namespace()):
     cfg.OUTPUT_DIR = os.path.join(Path(config_folder).parents[1], "output_vitrolife")       # Get second parent directory to config_folder, i.e. MaskFormer folder and create an output directory
     cfg.SOLVER.BASE_LR = FLAGS.learning_rate if "LEARNING_RATE" in key_list else 1e-3       # Starting learning rate
     cfg.SOLVER.IMS_PER_BATCH = FLAGS.batch_size if "BATCH_SIZE" in key_list else 1          # Batch size used when training => batch_size pr GPU = batch_size // num_gpus
-    cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e2)            # Maximum number of iterations to train for
+    cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e4)            # Maximum number of iterations to train for
     cfg.SOLVER.LR_SCHEDULER_NAME = "WarmupMultiStepLR"                                      # Default learning rate scheduler
     cfg.SOLVER.NESTEROV = True                                                              # Whether or not the learning algorithm will use Nesterow momentum
-    cfg.SOLVER.WEIGHT_DECAY = float(0)                                                      # Initially we will have no weight decay
-    cfg.SOLVER.CLIP_GRADIENTS.ENABLED = False
+    cfg.SOLVER.WEIGHT_DECAY = float(1e-5)                                                   # A small lambda value for the weight decay
+    cfg.SOLVER.CLIP_GRADIENTS.ENABLED = False                                               # Disable gradient clipping
 
     # Write the new config as a .yaml file - it already does, in the output dir...
     with open(os.path.join(cfg.OUTPUT_DIR, "vitrolife_config.yaml"), "w") as f:
