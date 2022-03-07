@@ -4,7 +4,6 @@ MaskFormer Training Script.
 
 This script is a simplified version of the training script in detectron2/tools.
 """
-from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 import copy
 import itertools
 import logging
@@ -16,9 +15,8 @@ import torch
 
 import detectron2.utils.comm as comm
 from detectron2.checkpoint import DetectionCheckpointer
-from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog, build_detection_train_loader
-from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
+from detectron2.engine import DefaultTrainer, default_setup, launch
 from detectron2.evaluation import (
     CityscapesInstanceEvaluator,
     CityscapesSemSegEvaluator,
@@ -28,7 +26,7 @@ from detectron2.evaluation import (
     SemSegEvaluator,
     verify_results,
 )
-from detectron2.projects.deeplab import add_deeplab_config, build_lr_scheduler
+from detectron2.projects.deeplab import build_lr_scheduler
 from detectron2.solver.build import maybe_add_gradient_clipping
 from detectron2.utils.logger import setup_logger
 
@@ -38,7 +36,6 @@ from mask_former import (
     MaskFormerPanopticDatasetMapper,
     MaskFormerSemanticDatasetMapper,
     SemanticSegmentorWithTTA,
-    add_mask_former_config,
 )
 
 
@@ -229,8 +226,9 @@ def setup(args):
     """
     Create configs and perform basic setups.
     """
-    cfg = args.config
-    cfg.freeze()
+    cfg = args.config                           # Create the custom config as an independent file
+    # delattr(FLAGS, "config")                    # Delete the custom config from the namespace variable again
+    cfg.freeze()                                # Freeze the config, i.e. make it read-only
     default_setup(cfg, args)
     # Setup logger for "mask_former" module
     setup_logger(output=cfg.OUTPUT_DIR, distributed_rank=comm.get_rank(), name="mask_former")
