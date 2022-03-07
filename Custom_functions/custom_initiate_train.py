@@ -1,29 +1,27 @@
-# Add the MaskFormer directory, Custom_functions directory and tools directory to PATH
+# Add the MaskFormer directory to PATH
 import os                                                                   # Used to navigate the folder structure in the current os
 import sys                                                                  # Used to control the PATH variable
 MaskFormer_dir = os.path.join("C:\\", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")
-if not os.path.isdir(MaskFormer_dir):
-    MaskFormer_dir = os.path.join("/mnt", "c", "Users", "Nico-", "Documents", "Python_Projects", "MaskFormer")
-if not os.path.isdir(MaskFormer_dir):
-    MaskFormer_dir = os.path.join("/mnt", "home_shared", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets", "MaskFormer")
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "c", MaskFormer_dir.split(os.path.sep, 1)[1])
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Repositories", "MaskFormer")
+if not os.path.isdir(MaskFormer_dir): MaskFormer_dir = os.path.join("/mnt", "home_shared", MaskFormer_dir.split(os.path.sep, 1)[1])
+assert os.path.isdir(MaskFormer_dir), "The MaskFormer directory doesn't exist in the chosen location"
 sys.path.append(MaskFormer_dir)                                             # Add MaskFormer directory to PATH
 sys.path.append(os.path.join(MaskFormer_dir, "Custom_functions"))           # Add Custom_functions directory to PATH
 sys.path.append(os.path.join(MaskFormer_dir, "tools"))                      # Add the tools directory to PATH
 
 # Add the environmental variable DETECTRON2_DATASETS
-dataset_dirs = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")
-if not os.path.isdir(dataset_dirs): dataset_dirs = os.path.join("/mnt", "c", dataset_dirs.split(os.path.sep,1)[1])
-if not os.path.isdir(dataset_dirs): dataset_dirs = os.path.join("/mnt", "home_shared", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")
-if not os.path.isdir(dataset_dirs): dataset_dirs = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")
-os.environ["DETECTRON2_DATASETS"] = dataset_dirs
+dataset_dir = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "c", dataset_dir.split(os.path.sep,1)[1])
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "home_shared", dataset_dir.split(os.path.sep, 1)[1])
+assert os.path.isdir(dataset_dir), "The dataset directory doesn't exist in the chosen location"
+os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
-from detectron2.data import build_detection_train_loader, DatasetCatalog, DatasetMapper # Function to build training_dataloader and the catalog of datasets
-from detectron2.modeling import build_model                                 # Used to build a model that can be used for anything, directly from a configuration file
-from detectron2.solver.build import build_lr_scheduler, build_optimizer     # Functions to build lr_scheduler and optimizer
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
 
@@ -40,12 +38,6 @@ def str2bool(v):
 def main(FLAGS):
     # Register the vitrolife datasets and create the custom configuration
     cfg = createVitrolifeConfiguration(FLAGS=FLAGS)
-
-    # # Build the dataloaders, model, lr_scheduler and optimizer using the config.
-    # train_loader = build_detection_train_loader(dataset=DatasetCatalog.get("vitrolife_dataset_train"), mapper=DatasetMapper(cfg, is_train=True), total_batch_size=3)
-    # model = build_model(cfg)
-    # optimizer = build_optimizer(cfg=cfg, model=model)
-    # lr_scheduler = build_lr_scheduler(cfg=cfg, optimizer=optimizer)
 
     # Visualize some random images
     if FLAGS.display_images:
