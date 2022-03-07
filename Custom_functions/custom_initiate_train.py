@@ -14,7 +14,7 @@ sys.path.append(os.path.join(MaskFormer_dir, "tools"))                      # Ad
 dataset_dir = os.path.join("C:\\", "Users", "Nico-", "OneDrive - Aarhus Universitet", "Biomedicinsk Teknologi", "5. semester", "Speciale", "Datasets")                      # Home windows computer
 if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "c", dataset_dir.split(os.path.sep,1)[1])                                                             # Home WSL
 if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/home", "neal", "Panoptic_segmentation_using_deep_neural_networks", "Datasets")                              # Larac server
-if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "home_shared", dataset_dir.split(os.path.sep, 1)[1])                                                  # Balder server
+if not os.path.isdir(dataset_dir): dataset_dir = os.path.join("/mnt", "home_shared", dataset_dir.split(os.path.sep, 2)[2])                                                  # Balder server
 assert os.path.isdir(dataset_dir), "The dataset directory doesn't exist in the chosen location"
 os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
