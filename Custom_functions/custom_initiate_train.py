@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(1e1), help="Maximum number of iterations to train the model for. Default: 10")
+    parser.add_argument("--max_iter", type=int, default=int(1e5), help="Maximum number of iterations to train the model for. Default: 10")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")

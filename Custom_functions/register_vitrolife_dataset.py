@@ -58,7 +58,8 @@ def register_vitrolife_data_and_metadata_func(debugging=False):
                                                                             stuff_colors = stuff_colors,
                                                                             stuff_dataset_id_to_contiguous_id = stuff_id,
                                                                             ignore_label=255,
-                                                                            evaluator_type="sem_seg")
+                                                                            evaluator_type="sem_seg",
+                                                                            num_files_in_dataset=len(DatasetCatalog["vitrolife_dataset_{:}".format(split_mode)]()))
 
 # Test that the function will actually return a list of dicts
 img_mask_list_train = vitrolife_dataset_function(run_mode="train")

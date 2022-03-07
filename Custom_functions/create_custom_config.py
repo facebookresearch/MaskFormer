@@ -20,7 +20,7 @@ def accumulate_keys(dct):
     return key_list
 
 # Define a function to create a custom configuration in the chosen config_dir and takes a namespace option
-def createVitrolifeConfiguration(FLAGS=Namespace()):
+def createVitrolifeConfiguration(FLAGS):
     # Register the vitrolife datasets
     register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)
     assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"
@@ -62,7 +62,9 @@ def createVitrolifeConfiguration(FLAGS=Namespace()):
     cfg.SOLVER.LR_SCHEDULER_NAME = "WarmupMultiStepLR"                                      # Default learning rate scheduler
     cfg.SOLVER.NESTEROV = True                                                              # Whether or not the learning algorithm will use Nesterow momentum
     cfg.SOLVER.WEIGHT_DECAY = float(1e-5)                                                   # A small lambda value for the weight decay
-    cfg.SOLVER.CLIP_GRADIENTS.ENABLED = False                                               # Disable gradient clipping
+    cfg.SOLVER.STEPS = [int(x+1)*500 for x in range(6)]                                     # The warm up steps for the learning rate scheduler
+    cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
+    cfg.TEST.EVAL_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Evaluation after each epoch
 
     # Write the new config as a .yaml file - it already does, in the output dir...
     with open(os.path.join(cfg.OUTPUT_DIR, "vitrolife_config.yaml"), "w") as f:
