@@ -43,7 +43,7 @@ def vitrolife_dataset_function(run_mode="train", debugging=False):
                         "image_custom_info": row}                                           # Add all the info from the current row to the dataset
         img_mask_pair_list.append(current_pair)                                             # Append the dictionary for the current pair to the list of images for the given dataset
         count += 1                                                                          # Increase the sample counter 
-        if count >= 20 and debugging==True: break                                           # When debugging, we will only use 20 samples in both train, val and test
+        if count >= 10 and debugging==True: break                                           # When debugging, we will only use 10 samples in both train, val and test
     
     assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
     return img_mask_pair_list
