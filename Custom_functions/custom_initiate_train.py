@@ -20,12 +20,21 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
-from torch import cuda                                                      # Used to select only the GPU with largest memory
+from datetime import datetime                                               # Used to get the current date and time when starting the process
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
+from GPU_memory_ranked_assigning import assign_free_gpus                    # Function to assign the running process to a specified number of GPUs ranked by memory availability
 
+# Assign the script to the GPU with the most memory available
+assign_free_gpus(max_gpus=1)                                                # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
+
+# Function to rename the automatically created "inference" directory in the OUTPUT_DIR from "inference" to "validation" before performing actual inference with the test set
+def rename_output_inference_folder(config):                                 # Define a function that will only take the config as input
+    source_folder = os.path.join(config.OUTPUT_DIR, "inference")            # The source folder is the current inference (i.e. validation) directory
+    dest_folder = os.path.join(config.OUTPUT_DIR, "validation")             # The destination folder is in the same parent-directory where inference is changed with validation
+    os.rename(source_folder, dest_folder)                                   # Perform the renaming of the folder
 
 # Define a function to convert string values into booleans
 def str2bool(v):
@@ -34,40 +43,43 @@ def str2bool(v):
     elif v.lower() in ('no', 'false', 'f', 'n', '0'): return False          # If any signs of the user saying no is present, the boolean value False is returned
     else: raise argparse.ArgumentTypeError('Boolean value expected.')       # If the user gave another input an error is raised
 
-# Define a function to select only one single GPU, the one with the most available memory
-num_devices = cuda.device_count()
-device_props = []
-for device in range(num_devices):
-    device_props.append(cuda.get_device_properties(device=device))
-
 
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
 def main(FLAGS):
-    # Register the vitrolife datasets and create the custom configuration
-    cfg = createVitrolifeConfiguration(FLAGS=FLAGS)
+    cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Register the vitrolife datasets and create the custom configuration
 
     # Visualize some random images
-    fig, filename_dict = visualize_the_images(config=cfg, num_images=FLAGS.num_images, position=[0.55, 0.08, 0.40, 0.75], filename_dict=None)
+    fig, filename_dict, cfg = visualize_the_images(config=cfg, num_images=FLAGS.num_images,
+        data_split="train" if FLAGS.debugging else "val", position=[0.55, 0.08, 0.40, 0.75], filename_dict=None)
     fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_before_training.jpg"), bbox_inches="tight")   # Save the figure
     if FLAGS.display_images: fig.show()
 
     # Train the model
-    launch_custom_training(args=FLAGS, config=cfg)
+    launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training loop with the given configuration
 
-    # Visualize the same images, now with a trained model, that should update the model weights according to the config...
-    fig, filename_dict = visualize_the_images(config=cfg, num_images=FLAGS.num_images, position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
+    # Visualize the same images, now with a trained model
+    
+    fig, filename_dict, cfg = visualize_the_images(config=cfg, num_images=FLAGS.num_images,
+        data_split="train" if FLAGS.debugging else "val", position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
     fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_after_training.jpg"), bbox_inches="tight")   # Save the figure
     if FLAGS.display_images: fig.show()
 
-    # Put the default predictor here or something...
+    # Evaluation on the test dataset
+    if FLAGS.debugging == False:                                            # Inference will only be performed if we are not debugging the model
+        rename_output_inference_folder(config=cfg)                          # Rename the "inference" folder in OUTPUT_DIR to "validation" before doing inference
+        FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
+        cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
+        launch_custom_training(args=FLAGS, config=cfg)                      # Launch the training (i.e. validation) loop
 
 
 # Running the main function
 if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
+    start_time = datetime.now().strftime("%H_%M_%d%b%Y").upper()
+    parser.add_argument("--output_dir_postfix", type=str, default=start_time, help="Filename extension to add to the output directory of the current process. Default: now: 'HH_MM_DDMMMYYYY'")
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(3e1), help="Maximum number of iterations to train the model for. Default: 10")
+    parser.add_argument("--max_iter", type=int, default=int(7e1), help="Maximum number of iterations to train the model for. Default: 10")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
@@ -81,6 +93,3 @@ if __name__ == "__main__":
     FLAGS = parser.parse_args()
     FLAGS = main(FLAGS)
 
-
-# TODO: [PS-7] Create predictor to evaluate training results 
-# TODO: [PS-10] => Implement something with the script checking available GPU's and select only the one with the largest memory left

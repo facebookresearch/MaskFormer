@@ -120,6 +120,6 @@ def visualize_the_images(config, data_split="train", num_images=5, figsize=(16, 
     try: fig = move_figure_position(fig=fig, position=position)
     except: pass
     fig.tight_layout()
-    return fig, filename_dict
+    return fig, filename_dict, putModelWeights(config)
 
 

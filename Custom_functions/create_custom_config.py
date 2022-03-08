@@ -43,6 +43,8 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset
     cfg["DATASETS"]["TRAIN"] = ("vitrolife_dataset_train",)                                 # Define the training dataset by using the config as a dictionary
     cfg.DATASETS.TEST = ("vitrolife_dataset_val",)                                          # Define the validation dataset by using the config as a CfgNode 
+    if "debugging" in key_list:                                                             # If we are debugging ...
+         if FLAGS.debugging==True: ("vitrolife_dataset_train",)                             # ... we will perform the evaluation on the train dataset instead of validation dataset...
     cfg.DATALOADER.NUM_WORKERS = FLAGS.Num_workers if "NUM_WORKERS" in key_list else 2      # Set the number of workers to only 2
     cfg.INPUT.CROP.ENABLED =  FLAGS.Crop_Enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
     cfg.INPUT.FORMAT = "RGB"                                                                # The input format is set to be RGB
@@ -57,8 +59,8 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.MODEL.PIXEL_MEAN = [100.15, 102.03, 103.89]                                         # Write the correct image mean value for the entire vitrolife dataset
     cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                             # Write the correct image standard deviation value for the entire vitrolife dataset
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
-    os.makedirs(os.path.join(Path(config_folder).parents[1], "output_vitrolife"), exist_ok=True)    # Create the output folder, if it doesn't already exist
-    cfg.OUTPUT_DIR = os.path.join(Path(config_folder).parents[1], "output_vitrolife")       # Get second parent directory to config_folder, i.e. MaskFormer folder and create an output directory
+    os.makedirs(os.path.join(Path(config_folder).parents[1], "output_vitrolife_"+FLAGS.output_dir_postfix), exist_ok=True)  # Create the output folder, if it doesn't already exist
+    cfg.OUTPUT_DIR = os.path.join(Path(config_folder).parents[1], "output_vitrolife_"+FLAGS.output_dir_postfix) # Get second parent directory to config_folder, i.e. MaskFormer folder and create an output directory
     cfg.SOLVER.BASE_LR = FLAGS.learning_rate if "LEARNING_RATE" in key_list else 1e-3       # Starting learning rate
     cfg.SOLVER.IMS_PER_BATCH = FLAGS.batch_size if "BATCH_SIZE" in key_list else 1          # Batch size used when training => batch_size pr GPU = batch_size // num_gpus
     cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e4)            # Maximum number of iterations to train for
@@ -70,7 +72,7 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.TEST.EVAL_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
 
     # Write the new config as a .yaml file - it already does, in the output dir...
-    with open(os.path.join(cfg.OUTPUT_DIR, "vitrolife_config.yaml"), "w") as f:
+    with open(os.path.join(cfg.OUTPUT_DIR, "vitrolife_config_initial.yaml"), "w") as f:
         f.write(cfg.dump())
     f.close()
         

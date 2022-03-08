@@ -1,0 +1,916 @@
+[03/08 21:52:07] detectron2 INFO: Rank of current process: 0. World size: 1
+[03/08 21:52:10] detectron2 INFO: Environment info:
+----------------------  ----------------------------------------------------------------------------------------------------------
+sys.platform            linux
+Python                  3.9.7 (default, Sep 16 2021, 13:09:58) [GCC 7.5.0]
+numpy                   1.21.2
+detectron2              0.6 @/root/anaconda3/envs/sem_seg_venv/lib/python3.9/site-packages/detectron2
+Compiler                GCC 7.3
+CUDA compiler           CUDA 11.3
+detectron2 arch flags   /root/anaconda3/envs/sem_seg_venv/lib/python3.9/site-packages/detectron2/_C.cpython-39-x86_64-linux-gnu.so
+DETECTRON2_ENV_MODULE   <not set>
+PyTorch                 1.10.2 @/root/anaconda3/envs/sem_seg_venv/lib/python3.9/site-packages/torch
+PyTorch debug build     False
+GPU available           Yes
+GPU 0                   NVIDIA GeForce GTX 1050 (arch=6.1)
+Driver version          511.65
+CUDA_HOME               None - invalid!
+Pillow                  9.0.1
+torchvision             0.11.3 @/root/anaconda3/envs/sem_seg_venv/lib/python3.9/site-packages/torchvision
+torchvision arch flags  /root/anaconda3/envs/sem_seg_venv/lib/python3.9/site-packages/torchvision/_C.so
+fvcore                  0.1.5.post20220305
+iopath                  0.1.9
+cv2                     4.5.5
+----------------------  ----------------------------------------------------------------------------------------------------------
+PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.2.3 (Git Hash 7336ca9f055cf1bfa13efb658fe15dc9b41f0740)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.2
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.10.2, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+[03/08 21:52:10] detectron2 INFO: Command line arguments: Namespace(config_file='', resume=False, eval_only=False, num_gpus=1, num_machines=1, machine_rank=0, dist_url='tcp://127.0.0.1:49152', opts=[], output_dir_postfix='21_51_08MAR2022', Num_workers=1, max_iter=70, Img_size_min=500, Img_size_max=500, Resnet_Depth=50, batch_size=1, num_images=5, learning_rate=0.001, Crop_Enabled=False, display_images=True, debugging=True, config=CfgNode({'VERSION': 2, 'MODEL': CfgNode({'LOAD_PROPOSALS': False, 'MASK_ON': False, 'KEYPOINT_ON': False, 'DEVICE': 'cuda', 'META_ARCHITECTURE': 'MaskFormer', 'WEIGHTS': '', 'PIXEL_MEAN': [100.15, 102.03, 103.89], 'PIXEL_STD': [57.32, 59.69, 61.93], 'BACKBONE': CfgNode({'NAME': 'build_resnet_backbone', 'FREEZE_AT': 0}), 'FPN': CfgNode({'IN_FEATURES': [], 'OUT_CHANNELS': 256, 'NORM': '', 'FUSE_TYPE': 'sum'}), 'PROPOSAL_GENERATOR': CfgNode({'NAME': 'RPN', 'MIN_SIZE': 0}), 'ANCHOR_GENERATOR': CfgNode({'NAME': 'DefaultAnchorGenerator', 'SIZES': [[32, 64, 128, 256, 512]], 'ASPECT_RATIOS': [[0.5, 1.0, 2.0]], 'ANGLES': [[-90, 0, 90]], 'OFFSET': 0.0}), 'RPN': CfgNode({'HEAD_NAME': 'StandardRPNHead', 'IN_FEATURES': ['res4'], 'BOUNDARY_THRESH': -1, 'IOU_THRESHOLDS': [0.3, 0.7], 'IOU_LABELS': [0, -1, 1], 'BATCH_SIZE_PER_IMAGE': 256, 'POSITIVE_FRACTION': 0.5, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'SMOOTH_L1_BETA': 0.0, 'LOSS_WEIGHT': 1.0, 'PRE_NMS_TOPK_TRAIN': 12000, 'PRE_NMS_TOPK_TEST': 6000, 'POST_NMS_TOPK_TRAIN': 2000, 'POST_NMS_TOPK_TEST': 1000, 'NMS_THRESH': 0.7, 'CONV_DIMS': [-1]}), 'ROI_HEADS': CfgNode({'NAME': 'Res5ROIHeads', 'NUM_CLASSES': 80, 'IN_FEATURES': ['res4'], 'IOU_THRESHOLDS': [0.5], 'IOU_LABELS': [0, 1], 'BATCH_SIZE_PER_IMAGE': 512, 'POSITIVE_FRACTION': 0.25, 'SCORE_THRESH_TEST': 0.05, 'NMS_THRESH_TEST': 0.5, 'PROPOSAL_APPEND_GT': True}), 'ROI_BOX_HEAD': CfgNode({'NAME': '', 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (10.0, 10.0, 5.0, 5.0), 'SMOOTH_L1_BETA': 0.0, 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'POOLER_TYPE': 'ROIAlignV2', 'NUM_FC': 0, 'FC_DIM': 1024, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_BBOX_REG': False, 'TRAIN_ON_PRED_BOXES': False}), 'ROI_BOX_CASCADE_HEAD': CfgNode({'BBOX_REG_WEIGHTS': ((10.0, 10.0, 5.0, 5.0), (20.0, 20.0, 10.0, 10.0), (30.0, 30.0, 15.0, 15.0)), 'IOUS': (0.5, 0.6, 0.7)}), 'ROI_MASK_HEAD': CfgNode({'NAME': 'MaskRCNNConvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_MASK': False, 'POOLER_TYPE': 'ROIAlignV2'}), 'ROI_KEYPOINT_HEAD': CfgNode({'NAME': 'KRCNNConvDeconvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'CONV_DIMS': (512, 512, 512, 512, 512, 512, 512, 512), 'NUM_KEYPOINTS': 17, 'MIN_KEYPOINTS_PER_IMAGE': 1, 'NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS': True, 'LOSS_WEIGHT': 1.0, 'POOLER_TYPE': 'ROIAlignV2'}), 'SEM_SEG_HEAD': CfgNode({'NAME': 'MaskFormerHead', 'IN_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'IGNORE_VALUE': 255, 'NUM_CLASSES': 6, 'CONVS_DIM': 256, 'COMMON_STRIDE': 4, 'NORM': 'GN', 'LOSS_WEIGHT': 1.0, 'LOSS_TYPE': 'hard_pixel_mining', 'PROJECT_FEATURES': ['res2'], 'PROJECT_CHANNELS': [48], 'ASPP_CHANNELS': 256, 'ASPP_DILATIONS': [6, 12, 18], 'ASPP_DROPOUT': 0.1, 'USE_DEPTHWISE_SEPARABLE_CONV': False, 'MASK_DIM': 256, 'TRANSFORMER_ENC_LAYERS': 0, 'PIXEL_DECODER_NAME': 'BasePixelDecoder'}), 'PANOPTIC_FPN': CfgNode({'INSTANCE_LOSS_WEIGHT': 1.0, 'COMBINE': CfgNode({'ENABLED': True, 'OVERLAP_THRESH': 0.5, 'STUFF_AREA_LIMIT': 4096, 'INSTANCES_CONFIDENCE_THRESH': 0.5})}), 'RETINANET': CfgNode({'NUM_CLASSES': 80, 'IN_FEATURES': ['p3', 'p4', 'p5', 'p6', 'p7'], 'NUM_CONVS': 4, 'IOU_THRESHOLDS': [0.4, 0.5], 'IOU_LABELS': [0, -1, 1], 'PRIOR_PROB': 0.01, 'SCORE_THRESH_TEST': 0.05, 'TOPK_CANDIDATES_TEST': 1000, 'NMS_THRESH_TEST': 0.5, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'FOCAL_LOSS_GAMMA': 2.0, 'FOCAL_LOSS_ALPHA': 0.25, 'SMOOTH_L1_LOSS_BETA': 0.1, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'NORM': ''}), 'RESNETS': CfgNode({'DEPTH': 50, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'NUM_GROUPS': 1, 'NORM': 'FrozenBN', 'WIDTH_PER_GROUP': 64, 'STRIDE_IN_1X1': False, 'RES5_DILATION': 1, 'RES2_OUT_CHANNELS': 256, 'STEM_OUT_CHANNELS': 64, 'DEFORM_ON_PER_STAGE': [False, False, False, False], 'DEFORM_MODULATED': False, 'DEFORM_NUM_GROUPS': 1, 'RES4_DILATION': 1, 'RES5_MULTI_GRID': [1, 1, 1], 'STEM_TYPE': 'basic'}), 'MASK_FORMER': CfgNode({'DEEP_SUPERVISION': True, 'NO_OBJECT_WEIGHT': 0.1, 'DICE_WEIGHT': 1.0, 'MASK_WEIGHT': 20.0, 'NHEADS': 8, 'DROPOUT': 0.1, 'DIM_FEEDFORWARD': 2048, 'ENC_LAYERS': 0, 'DEC_LAYERS': 6, 'PRE_NORM': False, 'HIDDEN_DIM': 256, 'NUM_OBJECT_QUERIES': 100, 'TRANSFORMER_IN_FEATURE': 'res5', 'ENFORCE_INPUT_PROJ': False, 'TEST': CfgNode({'PANOPTIC_ON': False, 'OBJECT_MASK_THRESHOLD': 0.0, 'OVERLAP_THRESHOLD': 0.0, 'SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE': False}), 'SIZE_DIVISIBILITY': 32}), 'SWIN': CfgNode({'PRETRAIN_IMG_SIZE': 224, 'PATCH_SIZE': 4, 'EMBED_DIM': 96, 'DEPTHS': [2, 2, 18, 2], 'NUM_HEADS': [3, 6, 12, 24], 'WINDOW_SIZE': 7, 'MLP_RATIO': 4.0, 'QKV_BIAS': True, 'QK_SCALE': None, 'DROP_RATE': 0.0, 'ATTN_DROP_RATE': 0.0, 'DROP_PATH_RATE': 0.3, 'APE': False, 'PATCH_NORM': True, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5']})}), 'INPUT': CfgNode({'MIN_SIZE_TRAIN': 500, 'MIN_SIZE_TRAIN_SAMPLING': 'choice', 'MAX_SIZE_TRAIN': 500, 'MIN_SIZE_TEST': 500, 'MAX_SIZE_TEST': 500, 'RANDOM_FLIP': 'horizontal', 'CROP': CfgNode({'ENABLED': False, 'TYPE': 'absolute', 'SIZE': [512, 512], 'SINGLE_CATEGORY_MAX_AREA': 1.0}), 'FORMAT': 'RGB', 'MASK_FORMAT': 'polygon', 'DATASET_MAPPER_NAME': 'mask_former_semantic', 'COLOR_AUG_SSD': True, 'SIZE_DIVISIBILITY': 512}), 'DATASETS': CfgNode({'TRAIN': ('vitrolife_dataset_train',), 'PROPOSAL_FILES_TRAIN': (), 'PRECOMPUTED_PROPOSAL_TOPK_TRAIN': 2000, 'TEST': ('vitrolife_dataset_val',), 'PROPOSAL_FILES_TEST': (), 'PRECOMPUTED_PROPOSAL_TOPK_TEST': 1000}), 'DATALOADER': CfgNode({'NUM_WORKERS': 1, 'ASPECT_RATIO_GROUPING': True, 'SAMPLER_TRAIN': 'TrainingSampler', 'REPEAT_THRESHOLD': 0.0, 'FILTER_EMPTY_ANNOTATIONS': True}), 'SOLVER': CfgNode({'LR_SCHEDULER_NAME': 'WarmupMultiStepLR', 'MAX_ITER': 70, 'BASE_LR': 0.001, 'MOMENTUM': 0.9, 'NESTEROV': True, 'WEIGHT_DECAY': 1e-05, 'WEIGHT_DECAY_NORM': 0.0, 'GAMMA': 0.1, 'STEPS': [500, 1000, 1500, 2000, 2500, 3000], 'WARMUP_FACTOR': 1.0, 'WARMUP_ITERS': 0, 'WARMUP_METHOD': 'linear', 'CHECKPOINT_PERIOD': 20, 'IMS_PER_BATCH': 1, 'REFERENCE_WORLD_SIZE': 0, 'BIAS_LR_FACTOR': 1.0, 'WEIGHT_DECAY_BIAS': None, 'CLIP_GRADIENTS': CfgNode({'ENABLED': True, 'CLIP_TYPE': 'full_model', 'CLIP_VALUE': 0.01, 'NORM_TYPE': 2.0}), 'AMP': CfgNode({'ENABLED': False}), 'POLY_LR_POWER': 0.9, 'POLY_LR_CONSTANT_ENDING': 0.0, 'WEIGHT_DECAY_EMBED': 0.0, 'OPTIMIZER': 'ADAMW', 'BACKBONE_MULTIPLIER': 0.1}), 'TEST': CfgNode({'EXPECTED_RESULTS': [], 'EVAL_PERIOD': 20, 'KEYPOINT_OKS_SIGMAS': [], 'DETECTIONS_PER_IMAGE': 100, 'AUG': CfgNode({'ENABLED': False, 'MIN_SIZES': (256, 384, 512, 640, 768, 896), 'MAX_SIZE': 3584, 'FLIP': True}), 'PRECISE_BN': CfgNode({'ENABLED': False, 'NUM_ITER': 200})}), 'OUTPUT_DIR': '/mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022', 'SEED': -1, 'CUDNN_BENCHMARK': False, 'VIS_PERIOD': 0, 'GLOBAL': CfgNode({'HACK': 1.0})}))
+[03/08 21:52:10] detectron2 INFO: Running with full config:
+CUDNN_BENCHMARK: false
+DATALOADER:
+  ASPECT_RATIO_GROUPING: true
+  FILTER_EMPTY_ANNOTATIONS: true
+  NUM_WORKERS: 1
+  REPEAT_THRESHOLD: 0.0
+  SAMPLER_TRAIN: TrainingSampler
+DATASETS:
+  PRECOMPUTED_PROPOSAL_TOPK_TEST: 1000
+  PRECOMPUTED_PROPOSAL_TOPK_TRAIN: 2000
+  PROPOSAL_FILES_TEST: []
+  PROPOSAL_FILES_TRAIN: []
+  TEST:
+  - vitrolife_dataset_val
+  TRAIN:
+  - vitrolife_dataset_train
+GLOBAL:
+  HACK: 1.0
+INPUT:
+  COLOR_AUG_SSD: true
+  CROP:
+    ENABLED: false
+    SINGLE_CATEGORY_MAX_AREA: 1.0
+    SIZE:
+    - 512
+    - 512
+    TYPE: absolute
+  DATASET_MAPPER_NAME: mask_former_semantic
+  FORMAT: RGB
+  MASK_FORMAT: polygon
+  MAX_SIZE_TEST: 500
+  MAX_SIZE_TRAIN: 500
+  MIN_SIZE_TEST: 500
+  MIN_SIZE_TRAIN: 500
+  MIN_SIZE_TRAIN_SAMPLING: choice
+  RANDOM_FLIP: horizontal
+  SIZE_DIVISIBILITY: 512
+MODEL:
+  ANCHOR_GENERATOR:
+    ANGLES:
+    - - -90
+      - 0
+      - 90
+    ASPECT_RATIOS:
+    - - 0.5
+      - 1.0
+      - 2.0
+    NAME: DefaultAnchorGenerator
+    OFFSET: 0.0
+    SIZES:
+    - - 32
+      - 64
+      - 128
+      - 256
+      - 512
+  BACKBONE:
+    FREEZE_AT: 0
+    NAME: build_resnet_backbone
+  DEVICE: cuda
+  FPN:
+    FUSE_TYPE: sum
+    IN_FEATURES: []
+    NORM: ''
+    OUT_CHANNELS: 256
+  KEYPOINT_ON: false
+  LOAD_PROPOSALS: false
+  MASK_FORMER:
+    DEC_LAYERS: 6
+    DEEP_SUPERVISION: true
+    DICE_WEIGHT: 1.0
+    DIM_FEEDFORWARD: 2048
+    DROPOUT: 0.1
+    ENC_LAYERS: 0
+    ENFORCE_INPUT_PROJ: false
+    HIDDEN_DIM: 256
+    MASK_WEIGHT: 20.0
+    NHEADS: 8
+    NO_OBJECT_WEIGHT: 0.1
+    NUM_OBJECT_QUERIES: 100
+    PRE_NORM: false
+    SIZE_DIVISIBILITY: 32
+    TEST:
+      OBJECT_MASK_THRESHOLD: 0.0
+      OVERLAP_THRESHOLD: 0.0
+      PANOPTIC_ON: false
+      SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE: false
+    TRANSFORMER_IN_FEATURE: res5
+  MASK_ON: false
+  META_ARCHITECTURE: MaskFormer
+  PANOPTIC_FPN:
+    COMBINE:
+      ENABLED: true
+      INSTANCES_CONFIDENCE_THRESH: 0.5
+      OVERLAP_THRESH: 0.5
+      STUFF_AREA_LIMIT: 4096
+    INSTANCE_LOSS_WEIGHT: 1.0
+  PIXEL_MEAN:
+  - 100.15
+  - 102.03
+  - 103.89
+  PIXEL_STD:
+  - 57.32
+  - 59.69
+  - 61.93
+  PROPOSAL_GENERATOR:
+    MIN_SIZE: 0
+    NAME: RPN
+  RESNETS:
+    DEFORM_MODULATED: false
+    DEFORM_NUM_GROUPS: 1
+    DEFORM_ON_PER_STAGE:
+    - false
+    - false
+    - false
+    - false
+    DEPTH: 50
+    NORM: FrozenBN
+    NUM_GROUPS: 1
+    OUT_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    RES2_OUT_CHANNELS: 256
+    RES4_DILATION: 1
+    RES5_DILATION: 1
+    RES5_MULTI_GRID:
+    - 1
+    - 1
+    - 1
+    STEM_OUT_CHANNELS: 64
+    STEM_TYPE: basic
+    STRIDE_IN_1X1: false
+    WIDTH_PER_GROUP: 64
+  RETINANET:
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_WEIGHTS: &id002
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    FOCAL_LOSS_ALPHA: 0.25
+    FOCAL_LOSS_GAMMA: 2.0
+    IN_FEATURES:
+    - p3
+    - p4
+    - p5
+    - p6
+    - p7
+    IOU_LABELS:
+    - 0
+    - -1
+    - 1
+    IOU_THRESHOLDS:
+    - 0.4
+    - 0.5
+    NMS_THRESH_TEST: 0.5
+    NORM: ''
+    NUM_CLASSES: 80
+    NUM_CONVS: 4
+    PRIOR_PROB: 0.01
+    SCORE_THRESH_TEST: 0.05
+    SMOOTH_L1_LOSS_BETA: 0.1
+    TOPK_CANDIDATES_TEST: 1000
+  ROI_BOX_CASCADE_HEAD:
+    BBOX_REG_WEIGHTS:
+    - &id001
+      - 10.0
+      - 10.0
+      - 5.0
+      - 5.0
+    - - 20.0
+      - 20.0
+      - 10.0
+      - 10.0
+    - - 30.0
+      - 30.0
+      - 15.0
+      - 15.0
+    IOUS:
+    - 0.5
+    - 0.6
+    - 0.7
+  ROI_BOX_HEAD:
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_LOSS_WEIGHT: 1.0
+    BBOX_REG_WEIGHTS: *id001
+    CLS_AGNOSTIC_BBOX_REG: false
+    CONV_DIM: 256
+    FC_DIM: 1024
+    NAME: ''
+    NORM: ''
+    NUM_CONV: 0
+    NUM_FC: 0
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+    SMOOTH_L1_BETA: 0.0
+    TRAIN_ON_PRED_BOXES: false
+  ROI_HEADS:
+    BATCH_SIZE_PER_IMAGE: 512
+    IN_FEATURES:
+    - res4
+    IOU_LABELS:
+    - 0
+    - 1
+    IOU_THRESHOLDS:
+    - 0.5
+    NAME: Res5ROIHeads
+    NMS_THRESH_TEST: 0.5
+    NUM_CLASSES: 80
+    POSITIVE_FRACTION: 0.25
+    PROPOSAL_APPEND_GT: true
+    SCORE_THRESH_TEST: 0.05
+  ROI_KEYPOINT_HEAD:
+    CONV_DIMS:
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    LOSS_WEIGHT: 1.0
+    MIN_KEYPOINTS_PER_IMAGE: 1
+    NAME: KRCNNConvDeconvUpsampleHead
+    NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS: true
+    NUM_KEYPOINTS: 17
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+  ROI_MASK_HEAD:
+    CLS_AGNOSTIC_MASK: false
+    CONV_DIM: 256
+    NAME: MaskRCNNConvUpsampleHead
+    NORM: ''
+    NUM_CONV: 0
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+  RPN:
+    BATCH_SIZE_PER_IMAGE: 256
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_LOSS_WEIGHT: 1.0
+    BBOX_REG_WEIGHTS: *id002
+    BOUNDARY_THRESH: -1
+    CONV_DIMS:
+    - -1
+    HEAD_NAME: StandardRPNHead
+    IN_FEATURES:
+    - res4
+    IOU_LABELS:
+    - 0
+    - -1
+    - 1
+    IOU_THRESHOLDS:
+    - 0.3
+    - 0.7
+    LOSS_WEIGHT: 1.0
+    NMS_THRESH: 0.7
+    POSITIVE_FRACTION: 0.5
+    POST_NMS_TOPK_TEST: 1000
+    POST_NMS_TOPK_TRAIN: 2000
+    PRE_NMS_TOPK_TEST: 6000
+    PRE_NMS_TOPK_TRAIN: 12000
+    SMOOTH_L1_BETA: 0.0
+  SEM_SEG_HEAD:
+    ASPP_CHANNELS: 256
+    ASPP_DILATIONS:
+    - 6
+    - 12
+    - 18
+    ASPP_DROPOUT: 0.1
+    COMMON_STRIDE: 4
+    CONVS_DIM: 256
+    IGNORE_VALUE: 255
+    IN_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    LOSS_TYPE: hard_pixel_mining
+    LOSS_WEIGHT: 1.0
+    MASK_DIM: 256
+    NAME: MaskFormerHead
+    NORM: GN
+    NUM_CLASSES: 6
+    PIXEL_DECODER_NAME: BasePixelDecoder
+    PROJECT_CHANNELS:
+    - 48
+    PROJECT_FEATURES:
+    - res2
+    TRANSFORMER_ENC_LAYERS: 0
+    USE_DEPTHWISE_SEPARABLE_CONV: false
+  SWIN:
+    APE: false
+    ATTN_DROP_RATE: 0.0
+    DEPTHS:
+    - 2
+    - 2
+    - 18
+    - 2
+    DROP_PATH_RATE: 0.3
+    DROP_RATE: 0.0
+    EMBED_DIM: 96
+    MLP_RATIO: 4.0
+    NUM_HEADS:
+    - 3
+    - 6
+    - 12
+    - 24
+    OUT_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    PATCH_NORM: true
+    PATCH_SIZE: 4
+    PRETRAIN_IMG_SIZE: 224
+    QKV_BIAS: true
+    QK_SCALE: null
+    WINDOW_SIZE: 7
+  WEIGHTS: ''
+OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022
+SEED: -1
+SOLVER:
+  AMP:
+    ENABLED: false
+  BACKBONE_MULTIPLIER: 0.1
+  BASE_LR: 0.001
+  BIAS_LR_FACTOR: 1.0
+  CHECKPOINT_PERIOD: 20
+  CLIP_GRADIENTS:
+    CLIP_TYPE: full_model
+    CLIP_VALUE: 0.01
+    ENABLED: true
+    NORM_TYPE: 2.0
+  GAMMA: 0.1
+  IMS_PER_BATCH: 1
+  LR_SCHEDULER_NAME: WarmupMultiStepLR
+  MAX_ITER: 70
+  MOMENTUM: 0.9
+  NESTEROV: true
+  OPTIMIZER: ADAMW
+  POLY_LR_CONSTANT_ENDING: 0.0
+  POLY_LR_POWER: 0.9
+  REFERENCE_WORLD_SIZE: 0
+  STEPS:
+  - 500
+  - 1000
+  - 1500
+  - 2000
+  - 2500
+  - 3000
+  WARMUP_FACTOR: 1.0
+  WARMUP_ITERS: 0
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 1.0e-05
+  WEIGHT_DECAY_BIAS: null
+  WEIGHT_DECAY_EMBED: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+TEST:
+  AUG:
+    ENABLED: false
+    FLIP: true
+    MAX_SIZE: 3584
+    MIN_SIZES:
+    - 256
+    - 384
+    - 512
+    - 640
+    - 768
+    - 896
+  DETECTIONS_PER_IMAGE: 100
+  EVAL_PERIOD: 20
+  EXPECTED_RESULTS: []
+  KEYPOINT_OKS_SIGMAS: []
+  PRECISE_BN:
+    ENABLED: false
+    NUM_ITER: 200
+VERSION: 2
+VIS_PERIOD: 0
+
+[03/08 21:52:10] detectron2 INFO: Full config saved to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022/config.yaml
+[03/08 21:52:10] d2.utils.env INFO: Using a generated random seed 10578148
+[03/08 21:52:11] d2.engine.defaults INFO: Model:
+MaskFormer(
+  (backbone): ResNet(
+    (stem): BasicStem(
+      (conv1): Conv2d(
+        3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False
+        (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+      )
+    )
+    (res2): Sequential(
+      (0): BottleneckBlock(
+        (shortcut): Conv2d(
+          64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv1): Conv2d(
+          64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+      )
+      (1): BottleneckBlock(
+        (conv1): Conv2d(
+          256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+      )
+      (2): BottleneckBlock(
+        (conv1): Conv2d(
+          256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+      )
+    )
+    (res3): Sequential(
+      (0): BottleneckBlock(
+        (shortcut): Conv2d(
+          256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv1): Conv2d(
+          256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+      )
+      (1): BottleneckBlock(
+        (conv1): Conv2d(
+          512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+      )
+      (2): BottleneckBlock(
+        (conv1): Conv2d(
+          512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+      )
+      (3): BottleneckBlock(
+        (conv1): Conv2d(
+          512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+      )
+    )
+    (res4): Sequential(
+      (0): BottleneckBlock(
+        (shortcut): Conv2d(
+          512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+        (conv1): Conv2d(
+          512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+      (1): BottleneckBlock(
+        (conv1): Conv2d(
+          1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+      (2): BottleneckBlock(
+        (conv1): Conv2d(
+          1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+      (3): BottleneckBlock(
+        (conv1): Conv2d(
+          1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+      (4): BottleneckBlock(
+        (conv1): Conv2d(
+          1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+      (5): BottleneckBlock(
+        (conv1): Conv2d(
+          1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+        )
+      )
+    )
+    (res5): Sequential(
+      (0): BottleneckBlock(
+        (shortcut): Conv2d(
+          1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False
+          (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+        )
+        (conv1): Conv2d(
+          1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+        )
+      )
+      (1): BottleneckBlock(
+        (conv1): Conv2d(
+          2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+        )
+      )
+      (2): BottleneckBlock(
+        (conv1): Conv2d(
+          2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv2): Conv2d(
+          512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+        )
+        (conv3): Conv2d(
+          512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+          (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+        )
+      )
+    )
+  )
+  (sem_seg_head): MaskFormerHead(
+    (pixel_decoder): BasePixelDecoder(
+      (adapter_1): Conv2d(
+        256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (layer_1): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (adapter_2): Conv2d(
+        512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (layer_2): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (adapter_3): Conv2d(
+        1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (layer_3): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (layer_4): Conv2d(
+        2048, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (mask_features): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+    (predictor): TransformerPredictor(
+      (pe_layer): PositionEmbeddingSine()
+      (transformer): Transformer(
+        (encoder): TransformerEncoder(
+          (layers): ModuleList()
+        )
+        (decoder): TransformerDecoder(
+          (layers): ModuleList(
+            (0): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+            (1): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+            (2): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+            (3): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+            (4): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+            (5): TransformerDecoderLayer(
+              (self_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (multihead_attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (linear1): Linear(in_features=256, out_features=2048, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+              (linear2): Linear(in_features=2048, out_features=256, bias=True)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (dropout1): Dropout(p=0.1, inplace=False)
+              (dropout2): Dropout(p=0.1, inplace=False)
+              (dropout3): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+      (query_embed): Embedding(100, 256)
+      (input_proj): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1))
+      (class_embed): Linear(in_features=256, out_features=7, bias=True)
+      (mask_embed): MLP(
+        (layers): ModuleList(
+          (0): Linear(in_features=256, out_features=256, bias=True)
+          (1): Linear(in_features=256, out_features=256, bias=True)
+          (2): Linear(in_features=256, out_features=256, bias=True)
+        )
+      )
+    )
+  )
+  (criterion): SetCriterion(
+    (matcher): Matcher HungarianMatcher
+        cost_class: 1
+        cost_mask: 20.0
+        cost_dice: 1.0
+  )
+)
+[03/08 21:52:11] mask_former.data.dataset_mappers.mask_former_semantic_dataset_mapper INFO: [MaskFormerSemanticDatasetMapper] Augmentations used in training: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice'), <detectron2.projects.point_rend.color_augmentation.ColorAugSSDTransform object at 0x7fd252184280>, RandomFlip()]
+[03/08 21:52:12] d2.data.build INFO: Using training sampler TrainingSampler
+[03/08 21:52:12] d2.data.common INFO: Serializing 20 elements to byte tensors and concatenating them all ...
+[03/08 21:52:12] d2.data.common INFO: Serialized dataset takes 0.03 MiB
+[03/08 21:52:12] d2.solver.build WARNING: SOLVER.STEPS contains values larger than SOLVER.MAX_ITER. These values will be ignored.
+[03/08 21:52:12] fvcore.common.checkpoint INFO: No checkpoint found. Initializing model from scratch
+[03/08 21:52:12] d2.engine.train_loop INFO: Starting training from iteration 0
+[03/08 21:52:23] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022/model_0000019.pth
+[03/08 21:52:24] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/08 21:52:24] d2.data.common INFO: Serializing 20 elements to byte tensors and concatenating them all ...
+[03/08 21:52:24] d2.data.common INFO: Serialized dataset takes 0.03 MiB
+[03/08 21:52:25] d2.evaluation.evaluator INFO: Start inference on 20 batches
+[03/08 21:52:27] d2.evaluation.evaluator INFO: Inference done 11/20. Dataloading: 0.0025 s/iter. Inference: 0.1072 s/iter. Eval: 0.0151 s/iter. Total: 0.1248 s/iter. ETA=0:00:01
+[03/08 21:52:29] d2.evaluation.evaluator INFO: Total inference time: 0:00:02.539445 (0.169296 s / iter per device, on 1 devices)
+[03/08 21:52:29] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:01 (0.103176 s / iter per device, on 1 devices)
+[03/08 21:52:29] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 1.5834166666666667, 'fwIoU': 0.9025950025000001, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 9.5005, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 9.5005, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 100.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/08 21:52:29] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/08 21:52:29] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/08 21:52:29] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/08 21:52:29] d2.evaluation.testing INFO: copypaste: 1.5834,0.9026,16.6667,9.5005
+[03/08 21:52:29] d2.utils.events INFO:  eta: 0:00:26  iter: 19  total_loss: 23.62  loss_ce: 1.267  loss_mask: 1.223  loss_dice: 0.8133  loss_ce_0: 1.428  loss_mask_0: 1.583  loss_dice_0: 0.8089  loss_ce_1: 1.328  loss_mask_1: 1.865  loss_dice_1: 0.7997  loss_ce_2: 1.389  loss_mask_2: 0.82  loss_dice_2: 0.8027  loss_ce_3: 1.307  loss_mask_3: 1.647  loss_dice_3: 0.8254  loss_ce_4: 1.311  loss_mask_4: 0.8545  loss_dice_4: 0.8045  time: 0.5402  data_time: 0.0284  lr: 0.001  max_mem: 1378M
+[03/08 21:52:40] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022/model_0000039.pth
+[03/08 21:52:41] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/08 21:52:41] d2.data.common INFO: Serializing 20 elements to byte tensors and concatenating them all ...
+[03/08 21:52:41] d2.data.common INFO: Serialized dataset takes 0.03 MiB
+[03/08 21:52:41] d2.evaluation.evaluator INFO: Start inference on 20 batches
+[03/08 21:52:43] d2.evaluation.evaluator INFO: Inference done 11/20. Dataloading: 0.0026 s/iter. Inference: 0.1029 s/iter. Eval: 0.0143 s/iter. Total: 0.1198 s/iter. ETA=0:00:01
+[03/08 21:52:45] d2.evaluation.evaluator INFO: Total inference time: 0:00:02.569725 (0.171315 s / iter per device, on 1 devices)
+[03/08 21:52:45] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:01 (0.102445 s / iter per device, on 1 devices)
+[03/08 21:52:45] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 0.6735833333333333, 'fwIoU': 0.1633372225, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 4.0415, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 4.0415, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 100.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/08 21:52:45] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/08 21:52:45] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/08 21:52:45] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/08 21:52:45] d2.evaluation.testing INFO: copypaste: 0.6736,0.1633,16.6667,4.0415
+[03/08 21:52:45] d2.utils.events INFO:  eta: 0:00:15  iter: 39  total_loss: 17.82  loss_ce: 1.244  loss_mask: 0.7211  loss_dice: 0.7905  loss_ce_0: 1.212  loss_mask_0: 1.15  loss_dice_0: 0.7896  loss_ce_1: 1.219  loss_mask_1: 0.7809  loss_dice_1: 0.7892  loss_ce_2: 1.116  loss_mask_2: 0.7874  loss_dice_2: 0.7883  loss_ce_3: 1.344  loss_mask_3: 0.7958  loss_dice_3: 0.7939  loss_ce_4: 1.307  loss_mask_4: 0.7359  loss_dice_4: 0.7819  time: 0.5405  data_time: 0.0062  lr: 0.001  max_mem: 1378M
+[03/08 21:52:56] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022/model_0000059.pth
+[03/08 21:52:57] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/08 21:52:57] d2.data.common INFO: Serializing 20 elements to byte tensors and concatenating them all ...
+[03/08 21:52:57] d2.data.common INFO: Serialized dataset takes 0.03 MiB
+[03/08 21:52:58] d2.evaluation.evaluator INFO: Start inference on 20 batches
+[03/08 21:52:59] d2.evaluation.evaluator INFO: Inference done 11/20. Dataloading: 0.0027 s/iter. Inference: 0.0983 s/iter. Eval: 0.0140 s/iter. Total: 0.1150 s/iter. ETA=0:00:01
+[03/08 21:53:01] d2.evaluation.evaluator INFO: Total inference time: 0:00:02.550440 (0.170029 s / iter per device, on 1 devices)
+[03/08 21:53:01] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:01 (0.100179 s / iter per device, on 1 devices)
+[03/08 21:53:01] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 1.5834166666666667, 'fwIoU': 0.9025950025000001, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 9.5005, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 9.5005, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 100.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/08 21:53:01] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/08 21:53:01] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/08 21:53:01] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/08 21:53:01] d2.evaluation.testing INFO: copypaste: 1.5834,0.9026,16.6667,9.5005
+[03/08 21:53:01] d2.utils.events INFO:  eta: 0:00:05  iter: 59  total_loss: 16.39  loss_ce: 1.139  loss_mask: 0.724  loss_dice: 0.7655  loss_ce_0: 1.146  loss_mask_0: 0.7507  loss_dice_0: 0.7709  loss_ce_1: 1.274  loss_mask_1: 0.7221  loss_dice_1: 0.7819  loss_ce_2: 0.8935  loss_mask_2: 0.7683  loss_dice_2: 0.7699  loss_ce_3: 1.115  loss_mask_3: 0.7556  loss_dice_3: 0.773  loss_ce_4: 1.118  loss_mask_4: 0.7894  loss_dice_4: 0.7705  time: 0.5386  data_time: 0.0085  lr: 0.001  max_mem: 1378M
+[03/08 21:53:07] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_21_51_08MAR2022/model_final.pth
+[03/08 21:53:07] d2.utils.events INFO:  eta: 0:00:00  iter: 69  total_loss: 15.06  loss_ce: 0.9787  loss_mask: 0.6992  loss_dice: 0.7565  loss_ce_0: 1.138  loss_mask_0: 0.7094  loss_dice_0: 0.7642  loss_ce_1: 1.201  loss_mask_1: 0.6486  loss_dice_1: 0.7712  loss_ce_2: 0.8335  loss_mask_2: 0.6418  loss_dice_2: 0.7578  loss_ce_3: 1.012  loss_mask_3: 0.6532  loss_dice_3: 0.7627  loss_ce_4: 1.016  loss_mask_4: 0.7223  loss_dice_4: 0.7576  time: 0.5371  data_time: 0.0086  lr: 0.001  max_mem: 1378M
+[03/08 21:53:07] d2.engine.hooks INFO: Overall training speed: 68 iterations in 0:00:36 (0.5372 s / it)
+[03/08 21:53:07] d2.engine.hooks INFO: Total training time: 0:00:53 (0:00:17 on hooks)
+[03/08 21:53:08] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/08 21:53:08] d2.data.common INFO: Serializing 20 elements to byte tensors and concatenating them all ...
+[03/08 21:53:08] d2.data.common INFO: Serialized dataset takes 0.03 MiB
+[03/08 21:53:09] d2.evaluation.evaluator INFO: Start inference on 20 batches
+[03/08 21:53:10] d2.evaluation.evaluator INFO: Inference done 11/20. Dataloading: 0.0027 s/iter. Inference: 0.1025 s/iter. Eval: 0.0159 s/iter. Total: 0.1211 s/iter. ETA=0:00:01
+[03/08 21:53:12] d2.evaluation.evaluator INFO: Total inference time: 0:00:02.544128 (0.169609 s / iter per device, on 1 devices)
+[03/08 21:53:12] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:01 (0.100824 s / iter per device, on 1 devices)
+[03/08 21:53:12] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 7.545834714116953, 'fwIoU': 17.657806921282443, 'IoU-Background': 5.028689799214205, 'IoU-Well': 40.246318485487514, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 17.492822480353713, 'pACC': 41.241699999999994, 'ACC-Background': 5.054966109395292, 'ACC-Well': 99.90196877272697, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/08 21:53:12] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/08 21:53:12] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/08 21:53:12] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/08 21:53:12] d2.evaluation.testing INFO: copypaste: 7.5458,17.6578,17.4928,41.2417
+[03/08 21:53:14] fvcore.common.checkpoint INFO: No checkpoint found. Initializing model from scratch
