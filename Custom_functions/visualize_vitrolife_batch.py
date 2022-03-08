@@ -36,6 +36,7 @@ def apply_colormap(mask, split):
         color_array[mask == label] = colors_used[label_id]
     return color_array
 
+
 def extractNumbersFromString(str, dtype=float, numbersWanted=1):
     try: vals = dtype(str)                                                          # At first, simply try to convert the string into the wanted dtype
     except:                                                                         # Else, if that is not possible ...
@@ -49,6 +50,7 @@ def extractNumbersFromString(str, dtype=float, numbersWanted=1):
         else: vals = np.nan                                                         # ... else if no numbers were found, return NaN
     return vals                                                                     # Return the wanted numbers, either as a type 'dtype' or, if multiple numbers, a list of 'dtypes'
 
+
 # Define a function to put the latest saved model as the model_weights in the config before creating the dataloader
 def putModelWeights(config):
     model_files = [x for x in os.listdir(config.OUTPUT_DIR) if "model" in x and x.endswith(".pth") and not np.isnan(extractNumbersFromString(x))]
@@ -57,6 +59,7 @@ def putModelWeights(config):
         latest_iteration_idx = np.argmax(iteration_numbers)
         config.MODEL.WEIGHTS = os.path.join(config.OUTPUT_DIR, model_files[latest_iteration_idx])
     return config
+
 
 # Define a function to convert a dictionary with filenames into a img_sem_seg batched dictionary like the output from the dataloader
 def filename_dict_to_datalist(filename_dict):
@@ -70,8 +73,11 @@ def filename_dict_to_datalist(filename_dict):
         dataset_list.append(current_files_dict)
     return dataset_list
 
+from time import sleep
+
 # Define a function to predict some label-masks for the dataset
 def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
+    config = putModelWeights(config)
     predictor = DefaultPredictor(cfg=config)
     Softmax_module = nn.Softmax(dim=2)
     if filename_dict == None:

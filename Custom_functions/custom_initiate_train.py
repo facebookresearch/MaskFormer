@@ -26,6 +26,7 @@ from detectron2.engine import default_argument_parser                       # De
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
 from GPU_memory_ranked_assigning import assign_free_gpus                    # Function to assign the running process to a specified number of GPUs ranked by memory availability
+from show_learning_curves import show_history                               # Function used to plot the learning curves for the given training
 
 # Assign the script to the GPU with the most memory available
 assign_free_gpus(max_gpus=1)                                                # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
@@ -58,7 +59,6 @@ def main(FLAGS):
     launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training loop with the given configuration
 
     # Visualize the same images, now with a trained model
-    
     fig, filename_dict, cfg = visualize_the_images(config=cfg, num_images=FLAGS.num_images,
         data_split="train" if FLAGS.debugging else "val", position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
     fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_after_training.jpg"), bbox_inches="tight")   # Save the figure
@@ -70,6 +70,9 @@ def main(FLAGS):
         FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
         cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
         launch_custom_training(args=FLAGS, config=cfg)                      # Launch the training (i.e. validation) loop
+    
+    # Display learning curves
+    fig = show_history(config=cfg, save_folder=cfg.OUTPUT_DIR)              # Create and save learning curves
 
 
 # Running the main function
