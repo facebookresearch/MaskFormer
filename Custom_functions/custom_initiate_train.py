@@ -20,6 +20,7 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
+from torch import cuda                                                      # Used to select only the GPU with largest memory
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
@@ -32,6 +33,12 @@ def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'): return True             # If any signs of the user saying yes is present, the boolean value True is returned
     elif v.lower() in ('no', 'false', 'f', 'n', '0'): return False          # If any signs of the user saying no is present, the boolean value False is returned
     else: raise argparse.ArgumentTypeError('Boolean value expected.')       # If the user gave another input an error is raised
+
+# Define a function to select only one single GPU, the one with the most available memory
+num_devices = cuda.device_count()
+device_props = []
+for device in range(num_devices):
+    device_props.append(cuda.get_device_properties(device=device))
 
 
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
@@ -51,6 +58,8 @@ def main(FLAGS):
     fig, filename_dict = visualize_the_images(config=cfg, num_images=FLAGS.num_images, position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
     fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_after_training.jpg"), bbox_inches="tight")   # Save the figure
     if FLAGS.display_images: fig.show()
+
+    # Put the default predictor here or something...
 
 
 # Running the main function
