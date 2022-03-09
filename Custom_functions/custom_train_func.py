@@ -15,7 +15,7 @@ from detectron2.utils import comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.data import MetadataCatalog, build_detection_train_loader
 from detectron2.engine import DefaultTrainer, default_setup, launch
-from detectron2.engine.hooks import PeriodicWriter, BestCheckpointer, Checkpointer
+from detectron2.engine.hooks import PeriodicWriter, BestCheckpointer, Checkpointer, PeriodicCheckpointer
 from detectron2.evaluation import SemSegEvaluator, verify_results
 from detectron2.projects.deeplab import build_lr_scheduler
 from detectron2.solver.build import maybe_add_gradient_clipping
@@ -159,11 +159,10 @@ def main(args):
     # val_loss_hook = ValLossHook(cfg=cfg)
     # trainer.register_hooks([val_loss_hook])
     # Implement BestCheckpointer hook somehow...
-    best_checkpoint_hook = BestCheckpointer(eval_period=cfg.TEST.EVAL_PERIOD, checkpointer=Checkpointer, val_metric="total_loss", mode="min", file_prefix="model_best")
-    periodic_writer_hook = [hook for hook in trainer._hooks if isinstance(hook, PeriodicWriter)]
-    all_other_hooks = [hook for hook in trainer._hooks if not isinstance(hook, PeriodicWriter)]
-    trainer._hooks = all_other_hooks + periodic_writer_hook
-    # trainer.register_hooks(hooks=all_other_hooks + [best_checkpoint_hook] + periodic_writer_hook)
+    # best_checkpoint_hook = BestCheckpointer(eval_period=cfg.TEST.EVAL_PERIOD, checkpointer=Checkpointer, val_metric="total_loss", mode="min", file_prefix="model_best")
+    # periodic_writer_hook = [hook for hook in trainer._hooks if isinstance(hook, PeriodicWriter)]
+    # all_other_hooks = [hook for hook in trainer._hooks if not isinstance(hook, PeriodicWriter) and not isinstance(hook, PeriodicCheckpointer)]
+    # trainer.register_hooks(hooks=all_other_hooks + periodic_writer_hook)
     trainer.resume_or_load(resume=args.resume)
     return trainer.train()
 

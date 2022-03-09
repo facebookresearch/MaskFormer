@@ -1,8 +1,10 @@
 # Import libraries
-import os 
+import os
+from turtle import color 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 # Define a function to compute the moving average of an input array or list
 def mov_avg_array(inp_array, mov_of_last_n_elements=4, output_last_n_elements=1):                       # Define a function to compute the moving average of an array or a list
@@ -12,6 +14,7 @@ def mov_avg_array(inp_array, mov_of_last_n_elements=4, output_last_n_elements=1)
     used_array_cumsum = np.cumsum(used_array_part)                                                      # Compute the cumulated sum for the used array part
     used_array_mov_avg = np.divide(used_array_cumsum, np.arange(1,1+mov_of_last_n_elements))            # Compute the moving average of the used array part
     return used_array_mov_avg[-output_last_n_elements:]                                                 # Output the last output_last_n_elements of the moving average array 
+
 
 # Define a function to load the metrics.json in each output directory
 def load_metrics(config):
@@ -34,36 +37,42 @@ def load_metrics(config):
         metrics_dict_training[key] = mov_avg_val                                                        # Assign the newly computed moving average of the dict[key]->values to the dictionary
     return metrics_dict_training                                                                        # Return the moving average value dictionary
 
+
 # Function to display learning curves
-def show_history(config, save_folder=None, display_fig=True):                                           # Define a function to visualize the learning curves
+def show_history(config, display_fig=True):                                                             # Define a function to visualize the learning curves
     history = load_metrics(config=config)                                                               # Load the metrics into the history dictionary
-    fig, ax_list = plt.subplots(nrows=1, ncols=4, figsize=(17, 4))                                      # Create a figure and a list of subplot axes
     loss_total = [key for key in history.keys() if "total_loss" in key.lower()]                         # Find all keys with loss_ce
     loss_ce = [key for key in history.keys() if "loss_ce" in key.lower()]                               # Find all keys with loss_ce
     loss_dice = [key for key in history.keys() if "loss_dice" in key.lower()]                           # Find all keys with loss_dice
     loss_mask = [key for key in history.keys() if "loss_mask" in key.lower()]                           # Find all keys with loss_mask
-    hist_keys = [loss_total, loss_ce, loss_dice, loss_mask]                                             # Combine the key-lists into a list of lists
-    ax_titles = ["total_loss", "loss_ce", "loss_dice", "loss_mask"]                                     # Create titles for the axes
+    learn_rate = [key for key in history.keys() if "lr" in key.lower()]                                 # Find all keys with loss_mask
+    hist_keys = [loss_total, learn_rate, loss_ce, loss_dice, loss_mask]                                 # Combine the key-lists into a list of lists
+    ax_titles = ["total_loss", "learning_rate", "loss_ce", "loss_dice", "loss_mask"]                    # Create titles for the axes
     colors = ["blue", "red", "black", "green", "magenta", "cyan", "yellow"]                             # Colors for the line plots
-    for ii, ax in enumerate(ax_list):                                                                   # Looping through each subplot axes
-        ax.set_xlabel("iteration #")                                                                    # Set correct x-label on the subplot axes
-        ax.set_ylabel(ax_titles[ii])                                                                    # Set correct y-label on the subplot axes
-        ax.grid("on")                                                                                   # Activate the grid on the subplot axes
-        ax.set_title(ax_titles[ii])                                                                     # Set correct title on the subplot axes
-        ax.set_xlim(left=0, right=history["iteration"][-1])                                             # Set correct x-limits on the subplot axes
-        ax.set_ylim(bottom=0, top=1)                                                                    # Set y-limits on the subplot axes
-        y_top_val = 0                                                                                   # Initiate counter to change the top-limit of the y-limits for the subplot axes
-
-        # Plot the points
-        for kk, key in enumerate(hist_keys[ii]):                                                        # Looping through all keys in the history dict that will be shown on the current subplot axes
-            if np.max(history[key]) > y_top_val:                                                        # If the maximum value in the array is larger than the current y_top_val ...
-                y_top_val = np.ceil(np.max(history[key])*10)/10                                         # ... y_top_val is updated and rounded to the nearest 0.1
-            ax.plot(history["iteration"], history[key], color=colors[kk], linestyle="-", marker=".")    # Plot the data
-        ax.legend([key for key in hist_keys[ii]], framealpha=0.5)                                       # Create a legend for the subplot with the history keys displayed
-        if y_top_val <= 0.05: ax.set_ylim(bottom=-0.05, top=0.05)                                       # If the max y-value is super low, the limits are changed
-        else: ax.set_ylim(top=y_top_val)                                                                # Set the final, updated y_top_value as the y-top-limit on the current subplot axes
-    if save_folder != None:                                                                             # If a folder to save the figure has been given ...
-        fig.savefig(os.path.join(save_folder, "Learning_curves.jpg"), bbox_inches="tight")              # ... the figure is saved in that folder
+    fig = plt.figure(figsize=(17,8))                                                                    # Create the figure
+    n_rows, n_cols, ax_count = 2, (2,3), 0                                                              # Initiate values for the number of rows and columns
+    for row in range(n_rows):                                                                           # Loop through all rows
+        for col in range(n_cols[row]):                                                                  # Loop through all columns in the current row
+            plt.subplot(n_rows, n_cols[row], 1+row*n_cols[row]+col)                                     # Create a new subplot
+            plt.xlabel(xlabel="Iteration #")                                                            # Set correct xlabel
+            plt.ylabel(ylabel=ax_titles[ax_count].replace("_", " "))                                    # Set correct ylabel
+            plt.grid(True)                                                                              # Activate the grid on the plot
+            plt.xlim(left=0, right=np.max(history["iteration"]))                                        # Set correct xlim
+            plt.title(label=ax_titles[ax_count].replace("_", " ").capitalize())                         # Set plot title
+            y_top_val = 0                                                                               # Initiate a value to determine the y_max value of the plot
+            for kk, key in enumerate(hist_keys[ax_count]):                                              # Looping through all keys in the history dict that will be shown on the current subplot axes
+                if np.max(history[key]) > y_top_val:                                                    # If the maximum value in the array is larger than the current y_top_val ...
+                    y_top_val = np.ceil(np.max(history[key])*10)/10                                     # ... y_top_val is updated and rounded to the nearest 0.1
+                plt.plot(history["iteration"], history[key], color=colors[kk], linestyle="-", marker=".")   # Plot the data
+            plt.legend([key for key in hist_keys[ax_count]], framealpha=0.5)                            # Create a legend for the subplot with the history keys displayed
+            ax_count += 1                                                                               # Increase the subplot counter
+        if y_top_val <= 0.05 and "lr" not in key.lower(): plt.ylim(bottom=-0.05, top=0.05)              # If the max y-value is super low, the limits are changed
+        else: plt.ylim(top=y_top_val)                                                                   # Set the final, updated y_top_value as the y-top-limit on the current subplot axes
+        if "lr" in key.lower():                                                                         # If we are plotting the learning rate ...
+            plt.ylim(bottom=np.min(history[key]) / 2, top=np.ceil(np.max(history[key])*100)/100)        # ... the y_limits are rounded to the nearest 0.01
+            plt.yscale('log')                                                                           # ... the y_scale will be logarithmic
+    try: fig.savefig(os.path.join(config.OUTPUT_DIR, "Learning_curves.jpg"), bbox_inches="tight")       # Try and save the figure in the OUTPUR_DIR ...
+    except: pass                                                                                        # ... otherwise simply skip saving the figure
     if display_fig==False: plt.close(fig)                                                               # If the user chose to not display the figure, the figure is closed
     fig.tight_layout()                                                                                  # Make the figure tight_layout, which assures the subplots will be better spaced together
     return fig                                                                                          # The figure handle is returned

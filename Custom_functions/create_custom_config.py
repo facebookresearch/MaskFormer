@@ -55,8 +55,9 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.MODEL.RESNETS.DEPTH = FLAGS.Resnet_Depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
     cfg.MODEL.WEIGHTS = FLAGS.Model_weights if "MODEL_WEIGHTS" in key_list else ""          # Whether or not to start with randomly initialized weights or just an earlier checkpoint
     cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 2                                                   # Set the weight for the dice loss
-    cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 10                                                  # Set the weight for the mask loss
+    cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 20                                                  # Set the weight for the mask predictive loss
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
+    cfg.OUTPUT_DIR = os.path.join(MaskFormer_dir, "output_"+FLAGS.output_dir_postfix)       # Get MaskFormer directory and name the output directory
     config_name = "config_initial.yaml"                                                     # Initial name for the configuration that will be saved in the cfg.OUTPUT_DIR
     if "DATASET_NAME" in key_list:                                                          # If we are choosing a dataset using the command line input arguments ...
         if "vitrolife" in FLAGS.dataset_name.lower():                                       # ... and the default value of vitrolife is chosen ...
@@ -70,10 +71,11 @@ def createVitrolifeConfiguration(FLAGS):
             cfg.INPUT.MAX_SIZE_TEST = FLAGS.Img_size_max if "IMG_SIZE_MAX" in key_list else 500     # The maximum size length for one side of the validation images
             cfg.MODEL.PIXEL_MEAN = [100.15, 102.03, 103.89]                                 # Write the correct image mean value for the entire vitrolife dataset
             cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                     # Write the correct image standard deviation value for the entire vitrolife dataset
-            cfg.OUTPUT_DIR = os.path.join(MaskFormer_dir, "output_vitrolife_"+FLAGS.output_dir_postfix) # Get MaskFormer directory and name the output directory
             cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog[cfg.DATASETS.TRAIN[0]].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
             cfg.TEST.EVAL_PERIOD = MetadataCatalog[cfg.DATASETS.TEST[0]].num_files_in_dataset           # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
-            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([100, cfg.SOLVER.MAX_ITER]) for x in range(100)],1).tolist()    # The warm up steps for the learning rate scheduler. Steps has to be smaller than max_iter
+            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([250, cfg.SOLVER.MAX_ITER]) for x in range(100)],1).tolist()    # The iterations where the learning rate will be lowered with a factor of "gamma"
+            cfg.SOLVER.GAMMA = 0.25                                                         # After every "step" iterations the learning rate will be updated, as new_lr = old_lr*gamma
+            cfg.OUTPUT_DIR = cfg.OUTPUT_DIR.replace("output_", "output_vitrolife_")         # Insert the 'vitrolife' to the output directory, if using the vitrolife dataset
             config_name = "vitrolife_" + config_name                                        # Prepend the config name with "vitrolife"
     if "DEBUGGING" in key_list:                                                             # Checking if debugging state is an option
         if FLAGS.debugging==True:                                                           # If we are debugging the model ...

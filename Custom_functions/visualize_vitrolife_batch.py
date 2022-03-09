@@ -6,7 +6,7 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 from register_vitrolife_dataset import vitrolife_dataset_function                   # Import function to get the dataset_dictionaries of the vitrolife dataset
-from detectron2.data import MetadataCatalog, DatasetMapper, build_detection_train_loader
+from detectron2.data import DatasetCatalog, MetadataCatalog, DatasetMapper, build_detection_train_loader
 from detectron2.engine.defaults import DefaultPredictor
 
 # Move the figure to the wanted position when displaying
@@ -26,11 +26,13 @@ try:
         return fig                                                                  # Return the figure handle
 except: pass
 
-
+MetadataCatalog["ade20k_sem_seg_train"].stuff_classes
 # Define function to apply a colormap on the images
-def apply_colormap(mask, split):
-    colors_used = list(MetadataCatalog["vitrolife_dataset_"+split].stuff_colors)
-    labels_used = list(MetadataCatalog["vitrolife_dataset_"+split].stuff_dataset_id_to_contiguous_id.values())
+def apply_colormap(mask, config):
+    colors_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_colors)
+    if "vitrolife" in config.DATASETS.TEST[0].lower():
+        labels_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_dataset_id_to_contiguous_id.values())
+    else: labels_used = list(range(1, 1+len(MetadataCatalog["ade20k_sem_seg_train"].stuff_classes)))
     color_array = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
     for label_id, label in enumerate(labels_used):
         color_array[mask == label] = colors_used[label_id]
@@ -76,16 +78,18 @@ def filename_dict_to_datalist(filename_dict):
         dataset_list.append(current_files_dict)
     return dataset_list
 
-from time import sleep
 
 # Define a function to predict some label-masks for the dataset
-def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
+def create_batch_Img_ytrue_ypred(config, data_split, FLAGS, filename_dict):
     config = putModelWeights(config)
     predictor = DefaultPredictor(cfg=config)
     Softmax_module = nn.Softmax(dim=2)
     if filename_dict == None:
-        dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)      # Here debugging just means that only 10 samples will be collected
-        dataloader = build_detection_train_loader(dataset_dicts, mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=num_images)
+        if "vitrolife" in FLAGS.dataset_name.lower():
+            dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)  # Here debugging just means that only 10 samples will be collected
+        else:
+            dataset_dicts = DatasetCatalog.get("ade20k_sem_seg_{:s}".format(data_split))
+        dataloader = build_detection_train_loader(dataset_dicts, mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=FLAGS.num_images)
         data_batch = next(iter(dataloader))
     else:
         data_batch = filename_dict_to_datalist(filename_dict)
@@ -94,22 +98,23 @@ def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
     for data in data_batch:
         img = torch.permute(data["image"], (1,2,0)).numpy()                         # Input image [H,W,C]
         y_true = data["sem_seg"].numpy()                                            # Ground truth label mask [H,W]
-        y_true_col = apply_colormap(mask=y_true, split=data_split)                  # Ground truth color mask
+        y_true_col = apply_colormap(mask=y_true, config=config)                     # Ground truth color mask
         out = predictor.__call__(img)                                               # Predicted output dictionary
         out_img = torch.permute(out["sem_seg"], (1,2,0))                            # Predicted output image [H,W,C]
         out_img_softmax = Softmax_module(out_img)                                   # Softmax of predicted output image
         y_pred = torch.argmax(out_img_softmax,2).cpu()                              # Predicted output image [H,W]
-        y_pred_col = apply_colormap(mask=y_pred, split=data_split)                  # Predicted colormap for predicted output image
+        y_pred_col = apply_colormap(mask=y_pred, config=config)                     # Predicted colormap for predicted output image
         # Append the input image, y_true and y_pred to the dictionary
         img_ytrue_ypred["input"].append(img)                                        # Append the input image to the dictionary
         img_ytrue_ypred["y_true"].append(y_true_col)                                # Append the ground truth to the dictionary
         img_ytrue_ypred["y_pred"].append(y_pred_col)                                # Append the predicted mask to the dictionary
-        img_ytrue_ypred["PN"].append(int(data["image_custom_info"]["PN_image"]))    # Read the true number of PN on the current image
         # Append the filenames to the filename_list
-        filename_dict["image"].append(data["image_custom_info"]["img_file"])        # ... the current image filename is entered
-        filename_dict["sem_seg"].append(data["image_custom_info"]["mask_file"])     # ... the current ground truth filename is entered
-        filename_dict["PN"].append(img_ytrue_ypred["PN"][-1])                       # ... and the current number of PN is entered
-        filename_dict["image_custom_info"].append(data["image_custom_info"])
+        filename_dict["image"].append(data["file_name"])                            # ... the current image filename is entered
+        filename_dict["sem_seg"].append(data["sem_seg"])                            # ... the current ground truth filename is entered
+        if "vitrolife" in FLAGS.dataset_name.lower():                               # If we are visualizing the vitrolife dataset
+            filename_dict["PN"].append(img_ytrue_ypred["PN"][-1])                   # ... and the current number of PN is entered
+            img_ytrue_ypred["PN"].append(int(data["image_custom_info"]["PN_image"]))# Read the true number of PN on the current image
+            filename_dict["image_custom_info"].append(data["image_custom_info"])    # Add the custom info with the PN to the dictionary
     return img_ytrue_ypred, filename_dict
 
 
@@ -117,13 +122,12 @@ def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
 def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0.40, 0.75], filename_dict=None):
     # Get the datasplit and number of images to show
     data_split = "train" if FLAGS.debugging else config.DATASETS.TEST[0].split("_")[-1] # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
-    num_images = FLAGS.num_images                                                   # The number of images shown will be what the user set
-    before_train = True if filename_dict == None else False                         # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
+    before_train = True if filename_dict == None and data_split != "test" else False    # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
     
-    # Extract information about the vitrolife dataset
+    # Extract information about the dataset used
     img_ytrue_ypred, filename_dict = create_batch_Img_ytrue_ypred(config=config,    # Create the batch of images that needs to be visualized
-        data_split=data_split, num_images=num_images, filename_dict=filename_dict)  # And return the images in the filename_dict dictionary
-    num_rows, num_cols = 3, num_images                                              # The figure will have three rows (input, y_pred, y_true) and one column per image
+        data_split=data_split, FLAGS=FLAGS, filename_dict=filename_dict)            # And return the images in the filename_dict dictionary
+    num_rows, num_cols = 3, FLAGS.num_images                                        # The figure will have three rows (input, y_pred, y_true) and one column per image
     fig = plt.figure(figsize=figsize)                                               # Create the figure object
     row = 0                                                                         # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)
     for key in img_ytrue_ypred.keys():                                              # Loop through all the keys in the batch dictionary
@@ -131,7 +135,9 @@ def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0
         for col, img in enumerate(img_ytrue_ypred[key]):                            # Loop through all available images in the dictionary
             plt.subplot(num_rows, num_cols, row*num_cols+col+1)                     # Create the subplot instance
             plt.axis("off")                                                         # Remove axis tickers
-            plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot
+            if "vitrolife" in FLAGS.dataset_name.lower():                           # If we are visualizing the vitrolife dataset
+                plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot with the number of PN
+            else: plt.title("{:s}".format(key))                                     # Otherwise simply put the key, i.e. either input, y_pred or y_true.
             plt.imshow(img, cmap="gray")                                            # Display the image
         row += 1                                                                    # Increase the row counter by 1
     try: fig = move_figure_position(fig=fig, position=position)                     # Try and move the figure to the wanted position (only possible on home computer with a display)

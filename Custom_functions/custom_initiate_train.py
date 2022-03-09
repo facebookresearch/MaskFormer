@@ -21,7 +21,7 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
 from datetime import datetime                                               # Used to get the current date and time when starting the process
-from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
+from create_custom_config import Namespace, createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
@@ -42,7 +42,6 @@ def str2bool(v):
     elif v.lower() in ('no', 'false', 'f', 'n', '0'): return False          # If any signs of the user saying no is present, the boolean value False is returned
     else: raise argparse.ArgumentTypeError('Boolean value expected.')       # If the user gave another input an error is raised
 
-
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
 def main(FLAGS):
     assign_free_gpus(max_gpus=1)                                            # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
@@ -59,8 +58,8 @@ def main(FLAGS):
     fig, filename_dict, cfg = visualize_the_images(config=cfg, FLAGS=FLAGS, filename_dict=filename_dict)    # Visualize the same images, from either train/val split after training
     if FLAGS.display_images: fig.show()
 
-    # Evaluation on the test dataset
-    if FLAGS.debugging == False:                                            # Inference will only be performed if we are not debugging the model
+    # Evaluation on the vitrolife test dataset. There is no ADE20K test dataset.
+    if FLAGS.debugging == False and "vitrolife" in FLAGS.dataset_name.lower():  # Inference will only be performed if we are not debugging the model
         rename_output_inference_folder(config=cfg)                          # Rename the "inference" folder in OUTPUT_DIR to "validation" before doing inference
         FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
         cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
@@ -68,7 +67,7 @@ def main(FLAGS):
         fig,_,_=visualize_the_images(config=cfg, FLAGS=FLAGS)               # Visualizing some new segmented test images
     
     # Display learning curves
-    fig = show_history(config=cfg, save_folder=cfg.OUTPUT_DIR)              # Create and save learning curves
+    fig = show_history(config=cfg)                                          # Create and save learning curves
 
 
 # Running the main function
@@ -76,11 +75,11 @@ if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
     start_time = datetime.now().strftime("%H_%M_%d%b%Y").upper()
-    parser.add_argument("--dataset_name", type=str, default="Vitrolife", help="Which datasets to train on. Choose between [ADE20K, Vitrolife]. Default: Vitrolife")
+    parser.add_argument("--dataset_name", type=str, default="ade20k", help="Which datasets to train on. Choose between [ADE20K, Vitrolife]. Default: Vitrolife")
     parser.add_argument("--output_dir_postfix", type=str, default=start_time, help="Filename extension to add to the output directory of the current process. Default: now: 'HH_MM_DDMMMYYYY'")
     parser.add_argument("--Model_weights", type=str, default="", help="Path to the checkpoint [.pth, .pkl], to initialize model weights. If empty, initialize model weights randomly. Default: ''")
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(1e2), help="Maximum number of iterations to train the model for. Default: 100")
+    parser.add_argument("--max_iter", type=int, default=int(2e1), help="Maximum number of iterations to train the model for. Default: 100")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
@@ -89,7 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=5e-3, help="The initial learning rate used for training the model. Default 1e-4")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
-    parser.add_argument("--debugging", type=str2bool, default=False, help="Whether or not we are debugging the script. Default: False")
+    parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(FLAGS)
