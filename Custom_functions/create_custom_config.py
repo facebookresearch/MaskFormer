@@ -1,4 +1,5 @@
-import os                                                                                   # Used to navigate around the current os and folder structure
+import os
+from pickle import FALSE                                                                                   # Used to navigate around the current os and folder structure
 from sys import path as sys_PATH                                                            # Used to get the system PATH variable
 from register_vitrolife_dataset import register_vitrolife_data_and_metadata_func            # Import function to register the vitrolife datasets in Detectron2 
 from detectron2.data import MetadataCatalog                                                 # Catalog containing metadata for all datasets available in Detectron2
@@ -58,6 +59,8 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.MODEL.WEIGHTS = FLAGS.Model_weights if "MODEL_WEIGHTS" in key_list else ""          # Whether or not to start with randomly initialized weights or just a earlier checkpoint
     cfg.MODEL.PIXEL_MEAN = [100.15, 102.03, 103.89]                                         # Write the correct image mean value for the entire vitrolife dataset
     cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                             # Write the correct image standard deviation value for the entire vitrolife dataset
+    cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 5
+    cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 10
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
     os.makedirs(os.path.join(Path(config_folder).parents[1], "output_vitrolife_"+FLAGS.output_dir_postfix), exist_ok=True)  # Create the output folder, if it doesn't already exist
     cfg.OUTPUT_DIR = os.path.join(Path(config_folder).parents[1], "output_vitrolife_"+FLAGS.output_dir_postfix) # Get second parent directory to config_folder, i.e. MaskFormer folder and create an output directory
@@ -66,10 +69,12 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e4)            # Maximum number of iterations to train for
     cfg.SOLVER.LR_SCHEDULER_NAME = "WarmupMultiStepLR"                                      # Default learning rate scheduler
     cfg.SOLVER.NESTEROV = True                                                              # Whether or not the learning algorithm will use Nesterow momentum
-    cfg.SOLVER.WEIGHT_DECAY = float(1e-5)                                                   # A small lambda value for the weight decay
+    cfg.SOLVER.WEIGHT_DECAY = float(2e-5)                                                   # A small lambda value for the weight decay
     cfg.SOLVER.STEPS = [int(x+1)*100 for x in range(5)]                                     # The warm up steps for the learning rate scheduler
     cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
     cfg.TEST.EVAL_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
+    cfg.TEST.AUG.FLIP = False 
+    cfg.MODEL.PANOPTIC_FPN.COMBINE.ENABLED = False
 
     # Write the new config as a .yaml file - it already does, in the output dir...
     with open(os.path.join(cfg.OUTPUT_DIR, "vitrolife_config_initial.yaml"), "w") as f:

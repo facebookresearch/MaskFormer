@@ -1,5 +1,5 @@
-[03/09 02:58:13] detectron2 INFO: Rank of current process: 0. World size: 1
-[03/09 02:58:15] detectron2 INFO: Environment info:
+[03/09 07:28:36] detectron2 INFO: Rank of current process: 0. World size: 1
+[03/09 07:28:40] detectron2 INFO: Environment info:
 ----------------------  ----------------------------------------------------------------------------------------------------------
 sys.platform            linux
 Python                  3.9.7 (default, Sep 16 2021, 13:09:58) [GCC 7.5.0]
@@ -37,8 +37,8 @@ PyTorch built with:
   - Magma 2.5.2
   - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.10.2, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
 
-[03/09 02:58:15] detectron2 INFO: Command line arguments: Namespace(config_file='', resume=False, eval_only=False, num_gpus=1, num_machines=1, machine_rank=0, dist_url='tcp://127.0.0.1:49152', opts=[], output_dir_postfix='02_58_09MAR2022', Num_workers=1, max_iter=40, Img_size_min=500, Img_size_max=500, Resnet_Depth=50, batch_size=1, num_images=5, learning_rate=0.001, Crop_Enabled=False, display_images=True, debugging=True, config=CfgNode({'VERSION': 2, 'MODEL': CfgNode({'LOAD_PROPOSALS': False, 'MASK_ON': False, 'KEYPOINT_ON': False, 'DEVICE': 'cuda', 'META_ARCHITECTURE': 'MaskFormer', 'WEIGHTS': '', 'PIXEL_MEAN': [100.15, 102.03, 103.89], 'PIXEL_STD': [57.32, 59.69, 61.93], 'BACKBONE': CfgNode({'NAME': 'build_resnet_backbone', 'FREEZE_AT': 0}), 'FPN': CfgNode({'IN_FEATURES': [], 'OUT_CHANNELS': 256, 'NORM': '', 'FUSE_TYPE': 'sum'}), 'PROPOSAL_GENERATOR': CfgNode({'NAME': 'RPN', 'MIN_SIZE': 0}), 'ANCHOR_GENERATOR': CfgNode({'NAME': 'DefaultAnchorGenerator', 'SIZES': [[32, 64, 128, 256, 512]], 'ASPECT_RATIOS': [[0.5, 1.0, 2.0]], 'ANGLES': [[-90, 0, 90]], 'OFFSET': 0.0}), 'RPN': CfgNode({'HEAD_NAME': 'StandardRPNHead', 'IN_FEATURES': ['res4'], 'BOUNDARY_THRESH': -1, 'IOU_THRESHOLDS': [0.3, 0.7], 'IOU_LABELS': [0, -1, 1], 'BATCH_SIZE_PER_IMAGE': 256, 'POSITIVE_FRACTION': 0.5, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'SMOOTH_L1_BETA': 0.0, 'LOSS_WEIGHT': 1.0, 'PRE_NMS_TOPK_TRAIN': 12000, 'PRE_NMS_TOPK_TEST': 6000, 'POST_NMS_TOPK_TRAIN': 2000, 'POST_NMS_TOPK_TEST': 1000, 'NMS_THRESH': 0.7, 'CONV_DIMS': [-1]}), 'ROI_HEADS': CfgNode({'NAME': 'Res5ROIHeads', 'NUM_CLASSES': 80, 'IN_FEATURES': ['res4'], 'IOU_THRESHOLDS': [0.5], 'IOU_LABELS': [0, 1], 'BATCH_SIZE_PER_IMAGE': 512, 'POSITIVE_FRACTION': 0.25, 'SCORE_THRESH_TEST': 0.05, 'NMS_THRESH_TEST': 0.5, 'PROPOSAL_APPEND_GT': True}), 'ROI_BOX_HEAD': CfgNode({'NAME': '', 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (10.0, 10.0, 5.0, 5.0), 'SMOOTH_L1_BETA': 0.0, 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'POOLER_TYPE': 'ROIAlignV2', 'NUM_FC': 0, 'FC_DIM': 1024, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_BBOX_REG': False, 'TRAIN_ON_PRED_BOXES': False}), 'ROI_BOX_CASCADE_HEAD': CfgNode({'BBOX_REG_WEIGHTS': ((10.0, 10.0, 5.0, 5.0), (20.0, 20.0, 10.0, 10.0), (30.0, 30.0, 15.0, 15.0)), 'IOUS': (0.5, 0.6, 0.7)}), 'ROI_MASK_HEAD': CfgNode({'NAME': 'MaskRCNNConvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_MASK': False, 'POOLER_TYPE': 'ROIAlignV2'}), 'ROI_KEYPOINT_HEAD': CfgNode({'NAME': 'KRCNNConvDeconvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'CONV_DIMS': (512, 512, 512, 512, 512, 512, 512, 512), 'NUM_KEYPOINTS': 17, 'MIN_KEYPOINTS_PER_IMAGE': 1, 'NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS': True, 'LOSS_WEIGHT': 1.0, 'POOLER_TYPE': 'ROIAlignV2'}), 'SEM_SEG_HEAD': CfgNode({'NAME': 'MaskFormerHead', 'IN_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'IGNORE_VALUE': 255, 'NUM_CLASSES': 6, 'CONVS_DIM': 256, 'COMMON_STRIDE': 4, 'NORM': 'GN', 'LOSS_WEIGHT': 1.0, 'LOSS_TYPE': 'hard_pixel_mining', 'PROJECT_FEATURES': ['res2'], 'PROJECT_CHANNELS': [48], 'ASPP_CHANNELS': 256, 'ASPP_DILATIONS': [6, 12, 18], 'ASPP_DROPOUT': 0.1, 'USE_DEPTHWISE_SEPARABLE_CONV': False, 'MASK_DIM': 256, 'TRANSFORMER_ENC_LAYERS': 0, 'PIXEL_DECODER_NAME': 'BasePixelDecoder'}), 'PANOPTIC_FPN': CfgNode({'INSTANCE_LOSS_WEIGHT': 1.0, 'COMBINE': CfgNode({'ENABLED': True, 'OVERLAP_THRESH': 0.5, 'STUFF_AREA_LIMIT': 4096, 'INSTANCES_CONFIDENCE_THRESH': 0.5})}), 'RETINANET': CfgNode({'NUM_CLASSES': 80, 'IN_FEATURES': ['p3', 'p4', 'p5', 'p6', 'p7'], 'NUM_CONVS': 4, 'IOU_THRESHOLDS': [0.4, 0.5], 'IOU_LABELS': [0, -1, 1], 'PRIOR_PROB': 0.01, 'SCORE_THRESH_TEST': 0.05, 'TOPK_CANDIDATES_TEST': 1000, 'NMS_THRESH_TEST': 0.5, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'FOCAL_LOSS_GAMMA': 2.0, 'FOCAL_LOSS_ALPHA': 0.25, 'SMOOTH_L1_LOSS_BETA': 0.1, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'NORM': ''}), 'RESNETS': CfgNode({'DEPTH': 50, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'NUM_GROUPS': 1, 'NORM': 'FrozenBN', 'WIDTH_PER_GROUP': 64, 'STRIDE_IN_1X1': False, 'RES5_DILATION': 1, 'RES2_OUT_CHANNELS': 256, 'STEM_OUT_CHANNELS': 64, 'DEFORM_ON_PER_STAGE': [False, False, False, False], 'DEFORM_MODULATED': False, 'DEFORM_NUM_GROUPS': 1, 'RES4_DILATION': 1, 'RES5_MULTI_GRID': [1, 1, 1], 'STEM_TYPE': 'basic'}), 'MASK_FORMER': CfgNode({'DEEP_SUPERVISION': True, 'NO_OBJECT_WEIGHT': 0.1, 'DICE_WEIGHT': 1.0, 'MASK_WEIGHT': 20.0, 'NHEADS': 8, 'DROPOUT': 0.1, 'DIM_FEEDFORWARD': 2048, 'ENC_LAYERS': 0, 'DEC_LAYERS': 6, 'PRE_NORM': False, 'HIDDEN_DIM': 256, 'NUM_OBJECT_QUERIES': 100, 'TRANSFORMER_IN_FEATURE': 'res5', 'ENFORCE_INPUT_PROJ': False, 'TEST': CfgNode({'PANOPTIC_ON': False, 'OBJECT_MASK_THRESHOLD': 0.0, 'OVERLAP_THRESHOLD': 0.0, 'SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE': False}), 'SIZE_DIVISIBILITY': 32}), 'SWIN': CfgNode({'PRETRAIN_IMG_SIZE': 224, 'PATCH_SIZE': 4, 'EMBED_DIM': 96, 'DEPTHS': [2, 2, 18, 2], 'NUM_HEADS': [3, 6, 12, 24], 'WINDOW_SIZE': 7, 'MLP_RATIO': 4.0, 'QKV_BIAS': True, 'QK_SCALE': None, 'DROP_RATE': 0.0, 'ATTN_DROP_RATE': 0.0, 'DROP_PATH_RATE': 0.3, 'APE': False, 'PATCH_NORM': True, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5']})}), 'INPUT': CfgNode({'MIN_SIZE_TRAIN': 500, 'MIN_SIZE_TRAIN_SAMPLING': 'choice', 'MAX_SIZE_TRAIN': 500, 'MIN_SIZE_TEST': 500, 'MAX_SIZE_TEST': 500, 'RANDOM_FLIP': 'horizontal', 'CROP': CfgNode({'ENABLED': False, 'TYPE': 'absolute', 'SIZE': [512, 512], 'SINGLE_CATEGORY_MAX_AREA': 1.0}), 'FORMAT': 'RGB', 'MASK_FORMAT': 'polygon', 'DATASET_MAPPER_NAME': 'mask_former_semantic', 'COLOR_AUG_SSD': True, 'SIZE_DIVISIBILITY': 512}), 'DATASETS': CfgNode({'TRAIN': ('vitrolife_dataset_train',), 'PROPOSAL_FILES_TRAIN': (), 'PRECOMPUTED_PROPOSAL_TOPK_TRAIN': 2000, 'TEST': ('vitrolife_dataset_val',), 'PROPOSAL_FILES_TEST': (), 'PRECOMPUTED_PROPOSAL_TOPK_TEST': 1000}), 'DATALOADER': CfgNode({'NUM_WORKERS': 1, 'ASPECT_RATIO_GROUPING': True, 'SAMPLER_TRAIN': 'TrainingSampler', 'REPEAT_THRESHOLD': 0.0, 'FILTER_EMPTY_ANNOTATIONS': True}), 'SOLVER': CfgNode({'LR_SCHEDULER_NAME': 'WarmupMultiStepLR', 'MAX_ITER': 40, 'BASE_LR': 0.001, 'MOMENTUM': 0.9, 'NESTEROV': True, 'WEIGHT_DECAY': 1e-05, 'WEIGHT_DECAY_NORM': 0.0, 'GAMMA': 0.1, 'STEPS': [100, 200, 300, 400, 500], 'WARMUP_FACTOR': 1.0, 'WARMUP_ITERS': 0, 'WARMUP_METHOD': 'linear', 'CHECKPOINT_PERIOD': 10, 'IMS_PER_BATCH': 1, 'REFERENCE_WORLD_SIZE': 0, 'BIAS_LR_FACTOR': 1.0, 'WEIGHT_DECAY_BIAS': None, 'CLIP_GRADIENTS': CfgNode({'ENABLED': True, 'CLIP_TYPE': 'full_model', 'CLIP_VALUE': 0.01, 'NORM_TYPE': 2.0}), 'AMP': CfgNode({'ENABLED': False}), 'POLY_LR_POWER': 0.9, 'POLY_LR_CONSTANT_ENDING': 0.0, 'WEIGHT_DECAY_EMBED': 0.0, 'OPTIMIZER': 'ADAMW', 'BACKBONE_MULTIPLIER': 0.1}), 'TEST': CfgNode({'EXPECTED_RESULTS': [], 'EVAL_PERIOD': 10, 'KEYPOINT_OKS_SIGMAS': [], 'DETECTIONS_PER_IMAGE': 100, 'AUG': CfgNode({'ENABLED': False, 'MIN_SIZES': (256, 384, 512, 640, 768, 896), 'MAX_SIZE': 3584, 'FLIP': True}), 'PRECISE_BN': CfgNode({'ENABLED': False, 'NUM_ITER': 200})}), 'OUTPUT_DIR': '/mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022', 'SEED': -1, 'CUDNN_BENCHMARK': False, 'VIS_PERIOD': 0, 'GLOBAL': CfgNode({'HACK': 1.0})}))
-[03/09 02:58:15] detectron2 INFO: Running with full config:
+[03/09 07:28:40] detectron2 INFO: Command line arguments: Namespace(config_file='', resume=False, eval_only=False, num_gpus=1, num_machines=1, machine_rank=0, dist_url='tcp://127.0.0.1:49152', opts=[], output_dir_postfix='07_28_09MAR2022', Num_workers=1, max_iter=40, Img_size_min=500, Img_size_max=500, Resnet_Depth=50, batch_size=1, num_images=5, learning_rate=0.001, Crop_Enabled=False, display_images=True, debugging=True, config=CfgNode({'VERSION': 2, 'MODEL': CfgNode({'LOAD_PROPOSALS': False, 'MASK_ON': False, 'KEYPOINT_ON': False, 'DEVICE': 'cuda', 'META_ARCHITECTURE': 'MaskFormer', 'WEIGHTS': '', 'PIXEL_MEAN': [100.15, 102.03, 103.89], 'PIXEL_STD': [57.32, 59.69, 61.93], 'BACKBONE': CfgNode({'NAME': 'build_resnet_backbone', 'FREEZE_AT': 0}), 'FPN': CfgNode({'IN_FEATURES': [], 'OUT_CHANNELS': 256, 'NORM': '', 'FUSE_TYPE': 'sum'}), 'PROPOSAL_GENERATOR': CfgNode({'NAME': 'RPN', 'MIN_SIZE': 0}), 'ANCHOR_GENERATOR': CfgNode({'NAME': 'DefaultAnchorGenerator', 'SIZES': [[32, 64, 128, 256, 512]], 'ASPECT_RATIOS': [[0.5, 1.0, 2.0]], 'ANGLES': [[-90, 0, 90]], 'OFFSET': 0.0}), 'RPN': CfgNode({'HEAD_NAME': 'StandardRPNHead', 'IN_FEATURES': ['res4'], 'BOUNDARY_THRESH': -1, 'IOU_THRESHOLDS': [0.3, 0.7], 'IOU_LABELS': [0, -1, 1], 'BATCH_SIZE_PER_IMAGE': 256, 'POSITIVE_FRACTION': 0.5, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'SMOOTH_L1_BETA': 0.0, 'LOSS_WEIGHT': 1.0, 'PRE_NMS_TOPK_TRAIN': 12000, 'PRE_NMS_TOPK_TEST': 6000, 'POST_NMS_TOPK_TRAIN': 2000, 'POST_NMS_TOPK_TEST': 1000, 'NMS_THRESH': 0.7, 'CONV_DIMS': [-1]}), 'ROI_HEADS': CfgNode({'NAME': 'Res5ROIHeads', 'NUM_CLASSES': 80, 'IN_FEATURES': ['res4'], 'IOU_THRESHOLDS': [0.5], 'IOU_LABELS': [0, 1], 'BATCH_SIZE_PER_IMAGE': 512, 'POSITIVE_FRACTION': 0.25, 'SCORE_THRESH_TEST': 0.05, 'NMS_THRESH_TEST': 0.5, 'PROPOSAL_APPEND_GT': True}), 'ROI_BOX_HEAD': CfgNode({'NAME': '', 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'BBOX_REG_LOSS_WEIGHT': 1.0, 'BBOX_REG_WEIGHTS': (10.0, 10.0, 5.0, 5.0), 'SMOOTH_L1_BETA': 0.0, 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'POOLER_TYPE': 'ROIAlignV2', 'NUM_FC': 0, 'FC_DIM': 1024, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_BBOX_REG': False, 'TRAIN_ON_PRED_BOXES': False}), 'ROI_BOX_CASCADE_HEAD': CfgNode({'BBOX_REG_WEIGHTS': ((10.0, 10.0, 5.0, 5.0), (20.0, 20.0, 10.0, 10.0), (30.0, 30.0, 15.0, 15.0)), 'IOUS': (0.5, 0.6, 0.7)}), 'ROI_MASK_HEAD': CfgNode({'NAME': 'MaskRCNNConvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'NUM_CONV': 0, 'CONV_DIM': 256, 'NORM': '', 'CLS_AGNOSTIC_MASK': False, 'POOLER_TYPE': 'ROIAlignV2'}), 'ROI_KEYPOINT_HEAD': CfgNode({'NAME': 'KRCNNConvDeconvUpsampleHead', 'POOLER_RESOLUTION': 14, 'POOLER_SAMPLING_RATIO': 0, 'CONV_DIMS': (512, 512, 512, 512, 512, 512, 512, 512), 'NUM_KEYPOINTS': 17, 'MIN_KEYPOINTS_PER_IMAGE': 1, 'NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS': True, 'LOSS_WEIGHT': 1.0, 'POOLER_TYPE': 'ROIAlignV2'}), 'SEM_SEG_HEAD': CfgNode({'NAME': 'MaskFormerHead', 'IN_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'IGNORE_VALUE': 255, 'NUM_CLASSES': 6, 'CONVS_DIM': 256, 'COMMON_STRIDE': 4, 'NORM': 'GN', 'LOSS_WEIGHT': 1.0, 'LOSS_TYPE': 'hard_pixel_mining', 'PROJECT_FEATURES': ['res2'], 'PROJECT_CHANNELS': [48], 'ASPP_CHANNELS': 256, 'ASPP_DILATIONS': [6, 12, 18], 'ASPP_DROPOUT': 0.1, 'USE_DEPTHWISE_SEPARABLE_CONV': False, 'MASK_DIM': 256, 'TRANSFORMER_ENC_LAYERS': 0, 'PIXEL_DECODER_NAME': 'BasePixelDecoder'}), 'PANOPTIC_FPN': CfgNode({'INSTANCE_LOSS_WEIGHT': 1.0, 'COMBINE': CfgNode({'ENABLED': False, 'OVERLAP_THRESH': 0.5, 'STUFF_AREA_LIMIT': 4096, 'INSTANCES_CONFIDENCE_THRESH': 0.5})}), 'RETINANET': CfgNode({'NUM_CLASSES': 80, 'IN_FEATURES': ['p3', 'p4', 'p5', 'p6', 'p7'], 'NUM_CONVS': 4, 'IOU_THRESHOLDS': [0.4, 0.5], 'IOU_LABELS': [0, -1, 1], 'PRIOR_PROB': 0.01, 'SCORE_THRESH_TEST': 0.05, 'TOPK_CANDIDATES_TEST': 1000, 'NMS_THRESH_TEST': 0.5, 'BBOX_REG_WEIGHTS': (1.0, 1.0, 1.0, 1.0), 'FOCAL_LOSS_GAMMA': 2.0, 'FOCAL_LOSS_ALPHA': 0.25, 'SMOOTH_L1_LOSS_BETA': 0.1, 'BBOX_REG_LOSS_TYPE': 'smooth_l1', 'NORM': ''}), 'RESNETS': CfgNode({'DEPTH': 50, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5'], 'NUM_GROUPS': 1, 'NORM': 'FrozenBN', 'WIDTH_PER_GROUP': 64, 'STRIDE_IN_1X1': False, 'RES5_DILATION': 1, 'RES2_OUT_CHANNELS': 256, 'STEM_OUT_CHANNELS': 64, 'DEFORM_ON_PER_STAGE': [False, False, False, False], 'DEFORM_MODULATED': False, 'DEFORM_NUM_GROUPS': 1, 'RES4_DILATION': 1, 'RES5_MULTI_GRID': [1, 1, 1], 'STEM_TYPE': 'basic'}), 'MASK_FORMER': CfgNode({'DEEP_SUPERVISION': True, 'NO_OBJECT_WEIGHT': 0.1, 'DICE_WEIGHT': 5, 'MASK_WEIGHT': 10, 'NHEADS': 8, 'DROPOUT': 0.1, 'DIM_FEEDFORWARD': 2048, 'ENC_LAYERS': 0, 'DEC_LAYERS': 6, 'PRE_NORM': False, 'HIDDEN_DIM': 256, 'NUM_OBJECT_QUERIES': 100, 'TRANSFORMER_IN_FEATURE': 'res5', 'ENFORCE_INPUT_PROJ': False, 'TEST': CfgNode({'PANOPTIC_ON': False, 'OBJECT_MASK_THRESHOLD': 0.0, 'OVERLAP_THRESHOLD': 0.0, 'SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE': False}), 'SIZE_DIVISIBILITY': 32}), 'SWIN': CfgNode({'PRETRAIN_IMG_SIZE': 224, 'PATCH_SIZE': 4, 'EMBED_DIM': 96, 'DEPTHS': [2, 2, 18, 2], 'NUM_HEADS': [3, 6, 12, 24], 'WINDOW_SIZE': 7, 'MLP_RATIO': 4.0, 'QKV_BIAS': True, 'QK_SCALE': None, 'DROP_RATE': 0.0, 'ATTN_DROP_RATE': 0.0, 'DROP_PATH_RATE': 0.3, 'APE': False, 'PATCH_NORM': True, 'OUT_FEATURES': ['res2', 'res3', 'res4', 'res5']})}), 'INPUT': CfgNode({'MIN_SIZE_TRAIN': 500, 'MIN_SIZE_TRAIN_SAMPLING': 'choice', 'MAX_SIZE_TRAIN': 500, 'MIN_SIZE_TEST': 500, 'MAX_SIZE_TEST': 500, 'RANDOM_FLIP': 'horizontal', 'CROP': CfgNode({'ENABLED': False, 'TYPE': 'absolute', 'SIZE': [512, 512], 'SINGLE_CATEGORY_MAX_AREA': 1.0}), 'FORMAT': 'RGB', 'MASK_FORMAT': 'polygon', 'DATASET_MAPPER_NAME': 'mask_former_semantic', 'COLOR_AUG_SSD': True, 'SIZE_DIVISIBILITY': 512}), 'DATASETS': CfgNode({'TRAIN': ('vitrolife_dataset_train',), 'PROPOSAL_FILES_TRAIN': (), 'PRECOMPUTED_PROPOSAL_TOPK_TRAIN': 2000, 'TEST': ('vitrolife_dataset_val',), 'PROPOSAL_FILES_TEST': (), 'PRECOMPUTED_PROPOSAL_TOPK_TEST': 1000}), 'DATALOADER': CfgNode({'NUM_WORKERS': 1, 'ASPECT_RATIO_GROUPING': True, 'SAMPLER_TRAIN': 'TrainingSampler', 'REPEAT_THRESHOLD': 0.0, 'FILTER_EMPTY_ANNOTATIONS': True}), 'SOLVER': CfgNode({'LR_SCHEDULER_NAME': 'WarmupMultiStepLR', 'MAX_ITER': 40, 'BASE_LR': 0.001, 'MOMENTUM': 0.9, 'NESTEROV': True, 'WEIGHT_DECAY': 2e-05, 'WEIGHT_DECAY_NORM': 0.0, 'GAMMA': 0.1, 'STEPS': [100, 200, 300, 400, 500], 'WARMUP_FACTOR': 1.0, 'WARMUP_ITERS': 0, 'WARMUP_METHOD': 'linear', 'CHECKPOINT_PERIOD': 10, 'IMS_PER_BATCH': 1, 'REFERENCE_WORLD_SIZE': 0, 'BIAS_LR_FACTOR': 1.0, 'WEIGHT_DECAY_BIAS': None, 'CLIP_GRADIENTS': CfgNode({'ENABLED': True, 'CLIP_TYPE': 'full_model', 'CLIP_VALUE': 0.01, 'NORM_TYPE': 2.0}), 'AMP': CfgNode({'ENABLED': False}), 'POLY_LR_POWER': 0.9, 'POLY_LR_CONSTANT_ENDING': 0.0, 'WEIGHT_DECAY_EMBED': 0.0, 'OPTIMIZER': 'ADAMW', 'BACKBONE_MULTIPLIER': 0.1}), 'TEST': CfgNode({'EXPECTED_RESULTS': [], 'EVAL_PERIOD': 10, 'KEYPOINT_OKS_SIGMAS': [], 'DETECTIONS_PER_IMAGE': 100, 'AUG': CfgNode({'ENABLED': False, 'MIN_SIZES': (256, 384, 512, 640, 768, 896), 'MAX_SIZE': 3584, 'FLIP': False}), 'PRECISE_BN': CfgNode({'ENABLED': False, 'NUM_ITER': 200})}), 'OUTPUT_DIR': '/mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022', 'SEED': -1, 'CUDNN_BENCHMARK': False, 'VIS_PERIOD': 0, 'GLOBAL': CfgNode({'HACK': 1.0})}))
+[03/09 07:28:40] detectron2 INFO: Running with full config:
 CUDNN_BENCHMARK: false
 DATALOADER:
   ASPECT_RATIO_GROUPING: true
@@ -108,13 +108,13 @@ MODEL:
   MASK_FORMER:
     DEC_LAYERS: 6
     DEEP_SUPERVISION: true
-    DICE_WEIGHT: 1.0
+    DICE_WEIGHT: 5
     DIM_FEEDFORWARD: 2048
     DROPOUT: 0.1
     ENC_LAYERS: 0
     ENFORCE_INPUT_PROJ: false
     HIDDEN_DIM: 256
-    MASK_WEIGHT: 20.0
+    MASK_WEIGHT: 10
     NHEADS: 8
     NO_OBJECT_WEIGHT: 0.1
     NUM_OBJECT_QUERIES: 100
@@ -130,7 +130,7 @@ MODEL:
   META_ARCHITECTURE: MaskFormer
   PANOPTIC_FPN:
     COMBINE:
-      ENABLED: true
+      ENABLED: false
       INSTANCES_CONFIDENCE_THRESH: 0.5
       OVERLAP_THRESH: 0.5
       STUFF_AREA_LIMIT: 4096
@@ -363,7 +363,7 @@ MODEL:
     QK_SCALE: null
     WINDOW_SIZE: 7
   WEIGHTS: ''
-OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022
+OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022
 SEED: -1
 SOLVER:
   AMP:
@@ -396,14 +396,14 @@ SOLVER:
   WARMUP_FACTOR: 1.0
   WARMUP_ITERS: 0
   WARMUP_METHOD: linear
-  WEIGHT_DECAY: 1.0e-05
+  WEIGHT_DECAY: 2.0e-05
   WEIGHT_DECAY_BIAS: null
   WEIGHT_DECAY_EMBED: 0.0
   WEIGHT_DECAY_NORM: 0.0
 TEST:
   AUG:
     ENABLED: false
-    FLIP: true
+    FLIP: false
     MAX_SIZE: 3584
     MIN_SIZES:
     - 256
@@ -422,9 +422,9 @@ TEST:
 VERSION: 2
 VIS_PERIOD: 0
 
-[03/09 02:58:15] detectron2 INFO: Full config saved to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/config.yaml
-[03/09 02:58:15] d2.utils.env INFO: Using a generated random seed 15880470
-[03/09 02:58:16] d2.engine.defaults INFO: Model:
+[03/09 07:28:40] detectron2 INFO: Full config saved to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/config.yaml
+[03/09 07:28:40] d2.utils.env INFO: Using a generated random seed 40765501
+[03/09 07:28:42] d2.engine.defaults INFO: Model:
 MaskFormer(
   (backbone): ResNet(
     (stem): BasicStem(
@@ -843,68 +843,68 @@ MaskFormer(
   (criterion): SetCriterion(
     (matcher): Matcher HungarianMatcher
         cost_class: 1
-        cost_mask: 20.0
-        cost_dice: 1.0
+        cost_mask: 10
+        cost_dice: 5
   )
 )
-[03/09 02:58:16] mask_former.data.dataset_mappers.mask_former_semantic_dataset_mapper INFO: [MaskFormerSemanticDatasetMapper] Augmentations used in training: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice'), <detectron2.projects.point_rend.color_augmentation.ColorAugSSDTransform object at 0x7f343d0186d0>, RandomFlip()]
-[03/09 02:58:17] d2.data.build INFO: Using training sampler TrainingSampler
-[03/09 02:58:17] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
-[03/09 02:58:17] d2.data.common INFO: Serialized dataset takes 0.02 MiB
-[03/09 02:58:17] d2.solver.build WARNING: SOLVER.STEPS contains values larger than SOLVER.MAX_ITER. These values will be ignored.
-[03/09 02:58:17] fvcore.common.checkpoint INFO: No checkpoint found. Initializing model from scratch
-[03/09 02:58:17] d2.engine.train_loop INFO: Starting training from iteration 0
-[03/09 02:58:18] d2.utils.events INFO:  iter: 0  total_loss: 40.48  loss_ce: 2.032  loss_mask: 6.821  loss_dice: 0.7662  loss_ce_0: 2.312  loss_mask_0: 1.806  loss_dice_0: 0.7934  loss_ce_1: 1.968  loss_mask_1: 4.088  loss_dice_1: 0.7607  loss_ce_2: 2.064  loss_mask_2: 2.181  loss_dice_2: 0.7882  loss_ce_3: 1.965  loss_mask_3: 2.77  loss_dice_3: 0.7898  loss_ce_4: 2.371  loss_mask_4: 5.437  loss_dice_4: 0.77  data_time: 0.3354  lr: 0.001  max_mem: 901M
-[03/09 02:58:23] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
-[03/09 02:58:23] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
-[03/09 02:58:23] d2.data.common INFO: Serialized dataset takes 0.02 MiB
-[03/09 02:58:23] d2.evaluation.evaluator INFO: Start inference on 10 batches
-[03/09 02:58:25] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.343168 (0.268634 s / iter per device, on 1 devices)
-[03/09 02:58:25] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.096138 s / iter per device, on 1 devices)
-[03/09 02:58:25] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 0.7820333333333334, 'fwIoU': 0.2201674084, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 4.6922, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 4.6922, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 100.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
-[03/09 02:58:25] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
-[03/09 02:58:25] d2.evaluation.testing INFO: copypaste: Task: sem_seg
-[03/09 02:58:25] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
-[03/09 02:58:25] d2.evaluation.testing INFO: copypaste: 0.7820,0.2202,16.6667,4.6922
-[03/09 02:58:26] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/model_0000010.pth
-[03/09 02:58:31] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
-[03/09 02:58:31] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
-[03/09 02:58:31] d2.data.common INFO: Serialized dataset takes 0.02 MiB
-[03/09 02:58:32] d2.evaluation.evaluator INFO: Start inference on 10 batches
-[03/09 02:58:34] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.376566 (0.275313 s / iter per device, on 1 devices)
-[03/09 02:58:34] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.099569 s / iter per device, on 1 devices)
-[03/09 02:58:34] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 1.7520466666666668, 'fwIoU': 1.1050803079840001, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 10.51228, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 10.51228, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 100.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
-[03/09 02:58:34] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
-[03/09 02:58:34] d2.evaluation.testing INFO: copypaste: Task: sem_seg
-[03/09 02:58:34] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
-[03/09 02:58:34] d2.evaluation.testing INFO: copypaste: 1.7520,1.1051,16.6667,10.5123
-[03/09 02:58:35] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/model_0000020.pth
-[03/09 02:58:35] d2.utils.events INFO:  eta: 0:00:09  iter: 20  total_loss: 22.66  loss_ce: 1.337  loss_mask: 1.212  loss_dice: 0.8145  loss_ce_0: 1.352  loss_mask_0: 0.8065  loss_dice_0: 0.8017  loss_ce_1: 1.328  loss_mask_1: 1.177  loss_dice_1: 0.8122  loss_ce_2: 1.356  loss_mask_2: 1.474  loss_dice_2: 0.821  loss_ce_3: 1.382  loss_mask_3: 0.8162  loss_dice_3: 0.8105  loss_ce_4: 1.32  loss_mask_4: 1.203  loss_dice_4: 0.8006  time: 0.5262  data_time: 0.0061  lr: 0.001  max_mem: 1378M
-[03/09 02:58:41] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
-[03/09 02:58:41] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
-[03/09 02:58:41] d2.data.common INFO: Serialized dataset takes 0.02 MiB
-[03/09 02:58:41] d2.evaluation.evaluator INFO: Start inference on 10 batches
-[03/09 02:58:43] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.380471 (0.276094 s / iter per device, on 1 devices)
-[03/09 02:58:43] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.095282 s / iter per device, on 1 devices)
-[03/09 02:58:43] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 0.06711333333333333, 'fwIoU': 0.001621511824, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.40268, 'mACC': 16.666666666666664, 'pACC': 0.40268, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 100.0})])
-[03/09 02:58:43] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
-[03/09 02:58:43] d2.evaluation.testing INFO: copypaste: Task: sem_seg
-[03/09 02:58:43] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
-[03/09 02:58:43] d2.evaluation.testing INFO: copypaste: 0.0671,0.0016,16.6667,0.4027
-[03/09 02:58:44] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/model_0000030.pth
-[03/09 02:58:49] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/model_final.pth
-[03/09 02:58:49] d2.utils.events INFO:  eta: 0:00:00  iter: 39  total_loss: 18.3  loss_ce: 1.204  loss_mask: 0.7311  loss_dice: 0.7998  loss_ce_0: 1.157  loss_mask_0: 0.6975  loss_dice_0: 0.7913  loss_ce_1: 1.228  loss_mask_1: 0.8318  loss_dice_1: 0.8002  loss_ce_2: 1.298  loss_mask_2: 0.9714  loss_dice_2: 0.8001  loss_ce_3: 1.276  loss_mask_3: 0.7867  loss_dice_3: 0.7899  loss_ce_4: 1.28  loss_mask_4: 0.684  loss_dice_4: 0.7871  time: 0.5296  data_time: 0.0060  lr: 0.001  max_mem: 1378M
-[03/09 02:58:49] d2.engine.hooks INFO: Overall training speed: 38 iterations in 0:00:20 (0.5297 s / it)
-[03/09 02:58:49] d2.engine.hooks INFO: Total training time: 0:00:31 (0:00:11 on hooks)
-[03/09 02:58:50] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
-[03/09 02:58:50] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
-[03/09 02:58:50] d2.data.common INFO: Serialized dataset takes 0.02 MiB
-[03/09 02:58:50] d2.evaluation.evaluator INFO: Start inference on 10 batches
-[03/09 02:58:52] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.385817 (0.277163 s / iter per device, on 1 devices)
-[03/09 02:58:52] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.097916 s / iter per device, on 1 devices)
-[03/09 02:58:52] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 0.7820333333333334, 'fwIoU': 0.2201674084, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 4.6922, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 4.6922, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 100.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
-[03/09 02:58:52] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
-[03/09 02:58:52] d2.evaluation.testing INFO: copypaste: Task: sem_seg
-[03/09 02:58:52] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
-[03/09 02:58:52] d2.evaluation.testing INFO: copypaste: 0.7820,0.2202,16.6667,4.6922
-[03/09 02:58:54] fvcore.common.checkpoint INFO: [Checkpointer] Loading from /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022/model_0000030.pth ...
+[03/09 07:28:42] mask_former.data.dataset_mappers.mask_former_semantic_dataset_mapper INFO: [MaskFormerSemanticDatasetMapper] Augmentations used in training: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice'), <detectron2.projects.point_rend.color_augmentation.ColorAugSSDTransform object at 0x7fca938a8f10>, RandomFlip()]
+[03/09 07:28:42] d2.data.build INFO: Using training sampler TrainingSampler
+[03/09 07:28:42] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
+[03/09 07:28:42] d2.data.common INFO: Serialized dataset takes 0.02 MiB
+[03/09 07:28:42] d2.solver.build WARNING: SOLVER.STEPS contains values larger than SOLVER.MAX_ITER. These values will be ignored.
+[03/09 07:28:43] fvcore.common.checkpoint INFO: No checkpoint found. Initializing model from scratch
+[03/09 07:28:43] d2.engine.train_loop INFO: Starting training from iteration 0
+[03/09 07:28:44] d2.utils.events INFO:  iter: 0  total_loss: 39.32  loss_ce: 2.086  loss_mask: 0.4605  loss_dice: 3.985  loss_ce_0: 1.817  loss_mask_0: 0.4405  loss_dice_0: 3.977  loss_ce_1: 1.93  loss_mask_1: 0.4829  loss_dice_1: 3.962  loss_ce_2: 1.562  loss_mask_2: 1.862  loss_dice_2: 3.839  loss_ce_3: 1.944  loss_mask_3: 0.5324  loss_dice_3: 3.967  loss_ce_4: 2.011  loss_mask_4: 0.5044  loss_dice_4: 3.955  data_time: 0.6742  lr: 0.001  max_mem: 901M
+[03/09 07:28:52] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/09 07:28:52] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
+[03/09 07:28:52] d2.data.common INFO: Serialized dataset takes 0.02 MiB
+[03/09 07:28:52] d2.evaluation.evaluator INFO: Start inference on 10 batches
+[03/09 07:28:55] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.607446 (0.321489 s / iter per device, on 1 devices)
+[03/09 07:28:55] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.148479 s / iter per device, on 1 devices)
+[03/09 07:28:55] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 7.330407974821678, 'fwIoU': 12.910441151292407, 'IoU-Background': 34.67534984262202, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 9.307098006308053, 'IoU-PN': 0.0, 'mACC': 18.221459879445494, 'pACC': 30.98704, 'ACC-Background': 81.31918716537453, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 28.009572111298436, 'ACC-PN': 0.0})])
+[03/09 07:28:55] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/09 07:28:55] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/09 07:28:55] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/09 07:28:55] d2.evaluation.testing INFO: copypaste: 7.3304,12.9104,18.2215,30.9870
+[03/09 07:28:56] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/model_0000010.pth
+[03/09 07:29:05] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/09 07:29:05] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
+[03/09 07:29:05] d2.data.common INFO: Serialized dataset takes 0.02 MiB
+[03/09 07:29:05] d2.evaluation.evaluator INFO: Start inference on 10 batches
+[03/09 07:29:08] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.648434 (0.329687 s / iter per device, on 1 devices)
+[03/09 07:29:08] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.149700 s / iter per device, on 1 devices)
+[03/09 07:29:08] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 0.06711333333333333, 'fwIoU': 0.001621511824, 'IoU-Background': 0.0, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.40268, 'mACC': 16.666666666666664, 'pACC': 0.40268, 'ACC-Background': 0.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 100.0})])
+[03/09 07:29:08] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/09 07:29:08] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/09 07:29:08] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/09 07:29:08] d2.evaluation.testing INFO: copypaste: 0.0671,0.0016,16.6667,0.4027
+[03/09 07:29:09] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/model_0000020.pth
+[03/09 07:29:10] d2.utils.events INFO:  eta: 0:00:14  iter: 20  total_loss: 38.91  loss_ce: 1.353  loss_mask: 0.7158  loss_dice: 4.018  loss_ce_0: 1.343  loss_mask_0: 0.4646  loss_dice_0: 4.008  loss_ce_1: 1.337  loss_mask_1: 0.5409  loss_dice_1: 4.053  loss_ce_2: 1.298  loss_mask_2: 0.4806  loss_dice_2: 4.049  loss_ce_3: 1.398  loss_mask_3: 0.4481  loss_dice_3: 3.977  loss_ce_4: 1.325  loss_mask_4: 0.4758  loss_dice_4: 4.008  time: 0.7773  data_time: 0.0113  lr: 0.001  max_mem: 1378M
+[03/09 07:29:17] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/09 07:29:17] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
+[03/09 07:29:17] d2.data.common INFO: Serialized dataset takes 0.02 MiB
+[03/09 07:29:18] d2.evaluation.evaluator INFO: Start inference on 10 batches
+[03/09 07:29:21] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.682821 (0.336564 s / iter per device, on 1 devices)
+[03/09 07:29:21] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.152567 s / iter per device, on 1 devices)
+[03/09 07:29:21] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 6.4598933333333335, 'fwIoU': 15.022879876095999, 'IoU-Background': 0.0, 'IoU-Well': 38.75936, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 38.75936, 'ACC-Background': 0.0, 'ACC-Well': 100.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/09 07:29:21] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/09 07:29:21] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/09 07:29:21] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/09 07:29:21] d2.evaluation.testing INFO: copypaste: 6.4599,15.0229,16.6667,38.7594
+[03/09 07:29:22] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/model_0000030.pth
+[03/09 07:29:30] fvcore.common.checkpoint INFO: Saving checkpoint to /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/model_final.pth
+[03/09 07:29:30] d2.utils.events INFO:  eta: 0:00:00  iter: 39  total_loss: 32.84  loss_ce: 0.9843  loss_mask: 0.4402  loss_dice: 3.8  loss_ce_0: 1.271  loss_mask_0: 0.4949  loss_dice_0: 3.833  loss_ce_1: 1.26  loss_mask_1: 0.5157  loss_dice_1: 3.856  loss_ce_2: 1.109  loss_mask_2: 0.3974  loss_dice_2: 3.746  loss_ce_3: 1.064  loss_mask_3: 0.4546  loss_dice_3: 3.841  loss_ce_4: 1.241  loss_mask_4: 0.4009  loss_dice_4: 3.748  time: 0.7813  data_time: 0.0102  lr: 0.001  max_mem: 1378M
+[03/09 07:29:30] d2.engine.hooks INFO: Overall training speed: 38 iterations in 0:00:29 (0.7814 s / it)
+[03/09 07:29:30] d2.engine.hooks INFO: Total training time: 0:00:45 (0:00:15 on hooks)
+[03/09 07:29:31] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(500, 500), max_size=500, sample_style='choice')]
+[03/09 07:29:31] d2.data.common INFO: Serializing 10 elements to byte tensors and concatenating them all ...
+[03/09 07:29:31] d2.data.common INFO: Serialized dataset takes 0.02 MiB
+[03/09 07:29:31] d2.evaluation.evaluator INFO: Start inference on 10 batches
+[03/09 07:29:35] d2.evaluation.evaluator INFO: Total inference time: 0:00:01.568198 (0.313640 s / iter per device, on 1 devices)
+[03/09 07:29:35] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:00:00 (0.163108 s / iter per device, on 1 devices)
+[03/09 07:29:35] d2.evaluation.sem_seg_evaluation INFO: OrderedDict([('sem_seg', {'mIoU': 5.691686666666667, 'fwIoU': 11.662306960144, 'IoU-Background': 34.15012, 'IoU-Well': 0.0, 'IoU-Zona': 0.0, 'IoU-Perivitelline space': 0.0, 'IoU-Cell': 0.0, 'IoU-PN': 0.0, 'mACC': 16.666666666666664, 'pACC': 34.15012, 'ACC-Background': 100.0, 'ACC-Well': 0.0, 'ACC-Zona': 0.0, 'ACC-Perivitelline space': 0.0, 'ACC-Cell': 0.0, 'ACC-PN': 0.0})])
+[03/09 07:29:35] d2.engine.defaults INFO: Evaluation results for vitrolife_dataset_val in csv format:
+[03/09 07:29:35] d2.evaluation.testing INFO: copypaste: Task: sem_seg
+[03/09 07:29:35] d2.evaluation.testing INFO: copypaste: mIoU,fwIoU,mACC,pACC
+[03/09 07:29:35] d2.evaluation.testing INFO: copypaste: 5.6917,11.6623,16.6667,34.1501
+[03/09 07:29:36] fvcore.common.checkpoint INFO: [Checkpointer] Loading from /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022/model_0000030.pth ...

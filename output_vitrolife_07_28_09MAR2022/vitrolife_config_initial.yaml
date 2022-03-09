@@ -67,13 +67,13 @@ MODEL:
   MASK_FORMER:
     DEC_LAYERS: 6
     DEEP_SUPERVISION: true
-    DICE_WEIGHT: 1.0
+    DICE_WEIGHT: 5
     DIM_FEEDFORWARD: 2048
     DROPOUT: 0.1
     ENC_LAYERS: 0
     ENFORCE_INPUT_PROJ: false
     HIDDEN_DIM: 256
-    MASK_WEIGHT: 20.0
+    MASK_WEIGHT: 10
     NHEADS: 8
     NO_OBJECT_WEIGHT: 0.1
     NUM_OBJECT_QUERIES: 100
@@ -89,7 +89,7 @@ MODEL:
   META_ARCHITECTURE: MaskFormer
   PANOPTIC_FPN:
     COMBINE:
-      ENABLED: true
+      ENABLED: false
       INSTANCES_CONFIDENCE_THRESH: 0.5
       OVERLAP_THRESH: 0.5
       STUFF_AREA_LIMIT: 4096
@@ -322,7 +322,7 @@ MODEL:
     QK_SCALE: null
     WINDOW_SIZE: 7
   WEIGHTS: ''
-OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_02_58_09MAR2022
+OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022
 SEED: -1
 SOLVER:
   AMP:
@@ -355,14 +355,14 @@ SOLVER:
   WARMUP_FACTOR: 1.0
   WARMUP_ITERS: 0
   WARMUP_METHOD: linear
-  WEIGHT_DECAY: 1.0e-05
+  WEIGHT_DECAY: 2.0e-05
   WEIGHT_DECAY_BIAS: null
   WEIGHT_DECAY_EMBED: 0.0
   WEIGHT_DECAY_NORM: 0.0
 TEST:
   AUG:
     ENABLED: false
-    FLIP: true
+    FLIP: false
     MAX_SIZE: 3584
     MIN_SIZES:
     - 256
