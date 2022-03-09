@@ -59,8 +59,8 @@ def putModelWeights(config):
         latest_iteration_idx = np.argmax(iteration_numbers)                         # Find the index of the model checkpoint with the latest iteration number
         config.MODEL.WEIGHTS = os.path.join(config.OUTPUT_DIR, model_files[latest_iteration_idx])   # Assign the latest model checkpoint to the config
         for model_file in model_files:                                              # Loop through all found model checkpoint files
-            if model_file == config.MODEL.WEIGHTS: continue                         # If the current model_file is the latest model_file, just continue to the next one(s)
-            os.remove(model_file)                                                   # Remove the current model_file
+            if os.path.join(config.OUTPUT_DIR,model_file) != config.MODEL.WEIGHTS:  # If the current model_file is not the checkpoint file ...
+                os.remove(os.path.join(config.OUTPUT_DIR,model_file))               # ... remove the current model_file
     return config                                                                   # Return the updated config
 
 
@@ -116,7 +116,7 @@ def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
 # Define function to plot the images
 def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0.40, 0.75], filename_dict=None):
     # Get the datasplit and number of images to show
-    data_split = config.DATASETS.TEST[0].split("_")[-1]                             # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
+    data_split = "train" if FLAGS.debugging else config.DATASETS.TEST[0].split("_")[-1] # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
     num_images = FLAGS.num_images                                                   # The number of images shown will be what the user set
     before_train = True if filename_dict == None else False                         # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
     

@@ -73,7 +73,7 @@ def createVitrolifeConfiguration(FLAGS):
             cfg.OUTPUT_DIR = os.path.join(MaskFormer_dir, "output_vitrolife_"+FLAGS.output_dir_postfix) # Get MaskFormer directory and name the output directory
             cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog[cfg.DATASETS.TRAIN[0]].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
             cfg.TEST.EVAL_PERIOD = MetadataCatalog[cfg.DATASETS.TEST[0]].num_files_in_dataset           # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
-            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([50, cfg.SOLVER.MAX_ITER]) for x in range(20)],1).tolist()  # The warm up steps for the learning rate scheduler. Steps has to be smaller than max_iter
+            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([100, cfg.SOLVER.MAX_ITER]) for x in range(100)],1).tolist()    # The warm up steps for the learning rate scheduler. Steps has to be smaller than max_iter
             config_name = "vitrolife_" + config_name                                        # Prepend the config name with "vitrolife"
     if "DEBUGGING" in key_list:                                                             # Checking if debugging state is an option
         if FLAGS.debugging==True:                                                           # If we are debugging the model ...
