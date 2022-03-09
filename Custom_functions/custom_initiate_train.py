@@ -88,7 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=5e-3, help="The initial learning rate used for training the model. Default 1e-4")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
-    parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Default: False")
+    parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Only applicable when using ADE20K dataset. Default: False")
     parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
