@@ -53,12 +53,15 @@ def extractNumbersFromString(str, dtype=float, numbersWanted=1):
 
 # Define a function to put the latest saved model as the model_weights in the config before creating the dataloader
 def putModelWeights(config):
-    model_files = [x for x in os.listdir(config.OUTPUT_DIR) if "model" in x and x.endswith(".pth") and not np.isnan(extractNumbersFromString(x))]
-    if len(model_files) >= 1:
-        iteration_numbers = [extractNumbersFromString(x, int) for x in model_files]
-        latest_iteration_idx = np.argmax(iteration_numbers)
-        config.MODEL.WEIGHTS = os.path.join(config.OUTPUT_DIR, model_files[latest_iteration_idx])
-    return config
+    model_files = [x for x in os.listdir(config.OUTPUT_DIR) if "model" in x and x.endswith(".pth") and not np.isnan(extractNumbersFromString(x))]   # Find all saved model checkpoints
+    if len(model_files) >= 1:                                                       # If any model checkpoint is found, 
+        iteration_numbers = [extractNumbersFromString(x, int) for x in model_files] # Find the iteration numbers for when they were saved
+        latest_iteration_idx = np.argmax(iteration_numbers)                         # Find the index of the model checkpoint with the latest iteration number
+        config.MODEL.WEIGHTS = os.path.join(config.OUTPUT_DIR, model_files[latest_iteration_idx])   # Assign the latest model checkpoint to the config
+        for model_file in model_files:                                              # Loop through all found model checkpoint files
+            if model_file == config.MODEL.WEIGHTS: continue                         # If the current model_file is the latest model_file, just continue to the next one(s)
+            os.remove(model_file)                                                   # Remove the current model_file
+    return config                                                                   # Return the updated config
 
 
 # Define a function to convert a dictionary with filenames into a img_sem_seg batched dictionary like the output from the dataloader
@@ -131,11 +134,11 @@ def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0
             plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot
             plt.imshow(img, cmap="gray")                                            # Display the image
         row += 1                                                                    # Increase the row counter by 1
-    try: fig = move_figure_position(fig=fig, position=position)
-    except: pass
-    fig.tight_layout()
-    figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "before" if before_train else "after")
-    fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")
-    return fig, filename_dict, putModelWeights(config)
+    try: fig = move_figure_position(fig=fig, position=position)                     # Try and move the figure to the wanted position (only possible on home computer with a display)
+    except: pass                                                                    # Except, simply just let the figure retain the current position
+    fig.tight_layout()                                                              # Assures the subplots are plotted tight around each other
+    figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "before" if before_train else "after")    # Create a name for the figure
+    fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")  # Save the figure in the output directory
+    return fig, filename_dict, putModelWeights(config)                              # Return the figure, the dictionary with the used images and the updated config with a new model checkpoint
 
 
