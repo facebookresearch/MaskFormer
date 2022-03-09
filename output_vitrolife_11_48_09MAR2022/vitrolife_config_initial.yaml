@@ -10,10 +10,9 @@ DATASETS:
   PRECOMPUTED_PROPOSAL_TOPK_TRAIN: 2000
   PROPOSAL_FILES_TEST: []
   PROPOSAL_FILES_TRAIN: []
-  TEST:
-  - vitrolife_dataset_val
-  TRAIN:
+  TEST: &id001
   - vitrolife_dataset_train
+  TRAIN: *id001
 GLOBAL:
   HACK: 1.0
 INPUT:
@@ -26,7 +25,7 @@ INPUT:
     - 512
     TYPE: absolute
   DATASET_MAPPER_NAME: mask_former_semantic
-  FORMAT: RGB
+  FORMAT: BGR
   MASK_FORMAT: polygon
   MAX_SIZE_TEST: 500
   MAX_SIZE_TRAIN: 500
@@ -67,7 +66,7 @@ MODEL:
   MASK_FORMER:
     DEC_LAYERS: 6
     DEEP_SUPERVISION: true
-    DICE_WEIGHT: 5
+    DICE_WEIGHT: 2
     DIM_FEEDFORWARD: 2048
     DROPOUT: 0.1
     ENC_LAYERS: 0
@@ -134,7 +133,7 @@ MODEL:
     WIDTH_PER_GROUP: 64
   RETINANET:
     BBOX_REG_LOSS_TYPE: smooth_l1
-    BBOX_REG_WEIGHTS: &id002
+    BBOX_REG_WEIGHTS: &id003
     - 1.0
     - 1.0
     - 1.0
@@ -164,7 +163,7 @@ MODEL:
     TOPK_CANDIDATES_TEST: 1000
   ROI_BOX_CASCADE_HEAD:
     BBOX_REG_WEIGHTS:
-    - &id001
+    - &id002
       - 10.0
       - 10.0
       - 5.0
@@ -184,7 +183,7 @@ MODEL:
   ROI_BOX_HEAD:
     BBOX_REG_LOSS_TYPE: smooth_l1
     BBOX_REG_LOSS_WEIGHT: 1.0
-    BBOX_REG_WEIGHTS: *id001
+    BBOX_REG_WEIGHTS: *id002
     CLS_AGNOSTIC_BBOX_REG: false
     CONV_DIM: 256
     FC_DIM: 1024
@@ -243,7 +242,7 @@ MODEL:
     BATCH_SIZE_PER_IMAGE: 256
     BBOX_REG_LOSS_TYPE: smooth_l1
     BBOX_REG_LOSS_WEIGHT: 1.0
-    BBOX_REG_WEIGHTS: *id002
+    BBOX_REG_WEIGHTS: *id003
     BOUNDARY_THRESH: -1
     CONV_DIMS:
     - -1
@@ -322,15 +321,15 @@ MODEL:
     QK_SCALE: null
     WINDOW_SIZE: 7
   WEIGHTS: ''
-OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_07_28_09MAR2022
+OUTPUT_DIR: /mnt/c/Users/Nico-/Documents/Python_Projects/MaskFormer/output_vitrolife_11_48_09MAR2022
 SEED: -1
 SOLVER:
   AMP:
     ENABLED: false
   BACKBONE_MULTIPLIER: 0.1
-  BASE_LR: 0.001
+  BASE_LR: 0.01
   BIAS_LR_FACTOR: 1.0
-  CHECKPOINT_PERIOD: 10
+  CHECKPOINT_PERIOD: 199
   CLIP_GRADIENTS:
     CLIP_TYPE: full_model
     CLIP_VALUE: 0.01
@@ -339,7 +338,7 @@ SOLVER:
   GAMMA: 0.1
   IMS_PER_BATCH: 1
   LR_SCHEDULER_NAME: WarmupMultiStepLR
-  MAX_ITER: 40
+  MAX_ITER: 200
   MOMENTUM: 0.9
   NESTEROV: true
   OPTIMIZER: ADAMW
@@ -347,11 +346,26 @@ SOLVER:
   POLY_LR_POWER: 0.9
   REFERENCE_WORLD_SIZE: 0
   STEPS:
-  - 100
-  - 200
-  - 300
-  - 400
-  - 500
+  - 49
+  - 99
+  - 149
+  - 199
+  - 249
+  - 299
+  - 349
+  - 399
+  - 449
+  - 499
+  - 549
+  - 599
+  - 649
+  - 699
+  - 749
+  - 799
+  - 849
+  - 899
+  - 949
+  - 999
   WARMUP_FACTOR: 1.0
   WARMUP_ITERS: 0
   WARMUP_METHOD: linear
@@ -372,7 +386,7 @@ TEST:
     - 768
     - 896
   DETECTIONS_PER_IMAGE: 100
-  EVAL_PERIOD: 10
+  EVAL_PERIOD: 199
   EXPECTED_RESULTS: []
   KEYPOINT_OKS_SIGMAS: []
   PRECISE_BN:
