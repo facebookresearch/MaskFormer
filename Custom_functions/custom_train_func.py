@@ -8,19 +8,22 @@ import itertools
 import logging
 import os
 import torch
-from ValLossHook_class import ValLossHook
 from copy import copy
 from collections import OrderedDict
 from typing import Any, Dict, List, Set
 from detectron2.utils import comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.data import MetadataCatalog, build_detection_train_loader
-from detectron2.engine import DefaultTrainer, default_setup, launch, HookBase
+from detectron2.engine import DefaultTrainer, default_setup, launch
+from detectron2.engine.hooks import PeriodicWriter, BestCheckpointer, Checkpointer
 from detectron2.evaluation import SemSegEvaluator, verify_results
 from detectron2.projects.deeplab import build_lr_scheduler
 from detectron2.solver.build import maybe_add_gradient_clipping
 from detectron2.utils.logger import setup_logger
 from mask_former import MaskFormerSemanticDatasetMapper, SemanticSegmentorWithTTA
+
+from detectron2.data import DatasetCatalog, MetadataCatalog, DatasetMapper
+from detectron2.data.build import build_detection_test_loader
 
 
 class Trainer(DefaultTrainer):
@@ -40,7 +43,7 @@ class Trainer(DefaultTrainer):
     @classmethod
     def build_lr_scheduler(cls, cfg, optimizer):
         return build_lr_scheduler(cfg, optimizer)
-
+    
     @classmethod
     def build_optimizer(cls, cfg, model):
         weight_decay_norm = cfg.SOLVER.WEIGHT_DECAY_NORM
@@ -153,7 +156,14 @@ def main(args):
         return res
 
     trainer = Trainer(cfg)
-
+    # val_loss_hook = ValLossHook(cfg=cfg)
+    # trainer.register_hooks([val_loss_hook])
+    # Implement BestCheckpointer hook somehow...
+    best_checkpoint_hook = BestCheckpointer(eval_period=cfg.TEST.EVAL_PERIOD, checkpointer=Checkpointer, val_metric="total_loss", mode="min", file_prefix="model_best")
+    periodic_writer_hook = [hook for hook in trainer._hooks if isinstance(hook, PeriodicWriter)]
+    all_other_hooks = [hook for hook in trainer._hooks if not isinstance(hook, PeriodicWriter)]
+    trainer._hooks = all_other_hooks + periodic_writer_hook
+    # trainer.register_hooks(hooks=all_other_hooks + [best_checkpoint_hook] + periodic_writer_hook)
     trainer.resume_or_load(resume=args.resume)
     return trainer.train()
 

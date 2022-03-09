@@ -67,7 +67,7 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.SOLVER.LR_SCHEDULER_NAME = "WarmupMultiStepLR"                                      # Default learning rate scheduler
     cfg.SOLVER.NESTEROV = True                                                              # Whether or not the learning algorithm will use Nesterow momentum
     cfg.SOLVER.WEIGHT_DECAY = float(1e-5)                                                   # A small lambda value for the weight decay
-    cfg.SOLVER.STEPS = [int(x+1)*500 for x in range(6)]                                     # The warm up steps for the learning rate scheduler
+    cfg.SOLVER.STEPS = [int(x+1)*100 for x in range(5)]                                     # The warm up steps for the learning rate scheduler
     cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
     cfg.TEST.EVAL_PERIOD = MetadataCatalog["vitrolife_dataset_train"].num_files_in_dataset  # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
 
