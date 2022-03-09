@@ -8,6 +8,7 @@ import itertools
 import logging
 import os
 import torch
+from ValLossHook_class import ValLossHook
 from copy import copy
 from collections import OrderedDict
 from typing import Any, Dict, List, Set
@@ -152,6 +153,7 @@ def main(args):
         return res
 
     trainer = Trainer(cfg)
+
     trainer.resume_or_load(resume=args.resume)
     return trainer.train()
 
