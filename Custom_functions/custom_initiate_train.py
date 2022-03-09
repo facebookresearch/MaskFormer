@@ -49,18 +49,14 @@ def main(FLAGS):
     cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Register the vitrolife datasets and create the custom configuration
 
     # Visualize some random images
-    fig, filename_dict, cfg = visualize_the_images(config=cfg, num_images=FLAGS.num_images,
-        data_split="train" if FLAGS.debugging else "val", position=[0.55, 0.08, 0.40, 0.75], filename_dict=None)
-    fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_before_training.jpg"), bbox_inches="tight")   # Save the figure
+    fig, filename_dict, cfg = visualize_the_images(config=cfg, FLAGS=FLAGS) # Visualize some segmentations on validation images before training
     if FLAGS.display_images: fig.show()
 
     # Train the model
     launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training loop
 
     # Visualize the same images, now with a trained model
-    fig, filename_dict, cfg = visualize_the_images(config=cfg, num_images=FLAGS.num_images,
-        data_split="train" if FLAGS.debugging else "val", position=[0.55, 0.08, 0.40, 0.75], filename_dict=filename_dict)
-    fig.savefig(os.path.join(cfg.OUTPUT_DIR, "Batched_samples_after_training.jpg"), bbox_inches="tight")   # Save the figure
+    fig, filename_dict, cfg = visualize_the_images(config=cfg, FLAGS=FLAGS, filename_dict=filename_dict)    # Visualize the same images, from either train/val split after training
     if FLAGS.display_images: fig.show()
 
     # Evaluation on the test dataset
@@ -69,6 +65,7 @@ def main(FLAGS):
         FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
         cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
         launch_custom_training(args=FLAGS, config=cfg)                      # Launch the training (i.e. validation) loop
+        fig,_,_=visualize_the_images(config=cfg, FLAGS=FLAGS)               # Visualizing some new segmented test images
     
     # Display learning curves
     fig = show_history(config=cfg, save_folder=cfg.OUTPUT_DIR)              # Create and save learning curves
@@ -83,7 +80,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir_postfix", type=str, default=start_time, help="Filename extension to add to the output directory of the current process. Default: now: 'HH_MM_DDMMMYYYY'")
     parser.add_argument("--Model_weights", type=str, default="", help="Path to the checkpoint [.pth, .pkl], to initialize model weights. If empty, initialize model weights randomly. Default: ''")
     parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(2e2), help="Maximum number of iterations to train the model for. Default: 200")
+    parser.add_argument("--max_iter", type=int, default=int(1e2), help="Maximum number of iterations to train the model for. Default: 100")
     parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
     parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
     parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
@@ -92,7 +89,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=5e-3, help="The initial learning rate used for training the model. Default 1e-4")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
-    parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
+    parser.add_argument("--debugging", type=str2bool, default=False, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(FLAGS)

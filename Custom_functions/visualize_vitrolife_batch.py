@@ -81,7 +81,7 @@ def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
     predictor = DefaultPredictor(cfg=config)
     Softmax_module = nn.Softmax(dim=2)
     if filename_dict == None:
-        dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)
+        dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)      # Here debugging just means that only 10 samples will be collected
         dataloader = build_detection_train_loader(dataset_dicts, mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=num_images)
         data_batch = next(iter(dataloader))
     else:
@@ -111,21 +111,31 @@ def create_batch_Img_ytrue_ypred(config, data_split, num_images, filename_dict):
 
 
 # Define function to plot the images
-def visualize_the_images(config, data_split="train", num_images=5, figsize=(16, 8), position=[0.10, 0.09, 0.80, 0.75], filename_dict=None):
+def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0.40, 0.75], filename_dict=None):
+    # Get the datasplit and number of images to show
+    data_split = config.DATASETS.TEST[0].split("_")[-1]                             # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
+    num_images = FLAGS.num_images                                                   # The number of images shown will be what the user set
+    before_train = True if filename_dict == None else False                         # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
+    
     # Extract information about the vitrolife dataset
-    img_ytrue_ypred, filename_dict = create_batch_Img_ytrue_ypred(config=config, data_split=data_split, num_images=num_images, filename_dict=filename_dict)
-    num_rows, num_cols = 3, num_images
-    fig = plt.figure(figsize=figsize)
-    for row, key in enumerate(img_ytrue_ypred.keys()):
-        if "pn" in key.lower(): continue
-        for col, img in enumerate(img_ytrue_ypred[key]):
-            plt.subplot(num_rows, num_cols, row*num_cols+col+1)
-            plt.axis("off")
-            plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))
-            plt.imshow(img, cmap="gray")
+    img_ytrue_ypred, filename_dict = create_batch_Img_ytrue_ypred(config=config,    # Create the batch of images that needs to be visualized
+        data_split=data_split, num_images=num_images, filename_dict=filename_dict)  # And return the images in the filename_dict dictionary
+    num_rows, num_cols = 3, num_images                                              # The figure will have three rows (input, y_pred, y_true) and one column per image
+    fig = plt.figure(figsize=figsize)                                               # Create the figure object
+    row = 0                                                                         # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)
+    for key in img_ytrue_ypred.keys():                                              # Loop through all the keys in the batch dictionary
+        if key.lower() not in ['input', 'y_true', 'y_pred']: continue               # If the key is not one of (input, y_pred, y_true), we simply skip to the next one
+        for col, img in enumerate(img_ytrue_ypred[key]):                            # Loop through all available images in the dictionary
+            plt.subplot(num_rows, num_cols, row*num_cols+col+1)                     # Create the subplot instance
+            plt.axis("off")                                                         # Remove axis tickers
+            plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot
+            plt.imshow(img, cmap="gray")                                            # Display the image
+        row += 1                                                                    # Increase the row counter by 1
     try: fig = move_figure_position(fig=fig, position=position)
     except: pass
     fig.tight_layout()
+    figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "before" if before_train else "after")
+    fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")
     return fig, filename_dict, putModelWeights(config)
 
 
