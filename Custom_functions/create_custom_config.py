@@ -53,7 +53,8 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.INPUT.CROP.ENABLED =  FLAGS.Crop_Enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
     cfg.MODEL.DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'                       # Assign the device on which the model should run
     cfg.MODEL.RESNETS.DEPTH = FLAGS.Resnet_Depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
-    cfg.MODEL.WEIGHTS = FLAGS.Model_weights if "MODEL_WEIGHTS" in key_list else ""          # Whether or not to start with randomly initialized weights or just an earlier checkpoint
+    cfg.MODEL.WEIGHTS = os.path.join(MaskFormer_dir, "maskformer_model_checkpoints",        # Whether or not to start with randomly initialized weights ...
+        "maskformer_swin_small_checkpoint.pkl") if "USE_CHECKPOINT" in key_list else ""     # ... or an earlier checkpoint of model weights
     cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 2                                                   # Set the weight for the dice loss
     cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 20                                                  # Set the weight for the mask predictive loss
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model

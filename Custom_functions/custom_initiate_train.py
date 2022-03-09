@@ -21,7 +21,7 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
 from datetime import datetime                                               # Used to get the current date and time when starting the process
-from create_custom_config import Namespace, createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
+from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
@@ -88,6 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=5e-3, help="The initial learning rate used for training the model. Default 1e-4")
     parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
+    parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Default: False")
     parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
