@@ -1,15 +1,15 @@
 import os
 import glob
+import pandas as pd
+import numpy as np
 from copy import deepcopy
 from PIL import Image
-import pandas as pd
-import os
 from detectron2.data import DatasetCatalog, MetadataCatalog
 
 # Define the function to return the list of dictionaries with information regarding all images available in the vitrolife dataset
 def vitrolife_dataset_function(run_mode="train", debugging=False):
     # Find the folder containing the vitrolife dataset
-    vitrolife_dataset_filepath = os.path.join(os.environ["DETECTRON2_DATASETS"], "Vitrolife_dataset")
+    vitrolife_dataset_filepath = os.path.join(os.getenv("DETECTRON2_DATASETS"), "Vitrolife_dataset")
     
     # Find the metadata file
     metadata_file = os.path.join(vitrolife_dataset_filepath, "metadata.csv")
@@ -32,8 +32,10 @@ def vitrolife_dataset_function(run_mode="train", debugging=False):
         mask_filename = os.path.basename(mask_filename[0])                                  # Extract the mask filename from the list
         row["img_file"] = os.path.join(vitrolife_dataset_filepath, "raw_images", img_filename)  # Add the current filename for the input image to the row-variable
         row["mask_file"] = os.path.join(vitrolife_dataset_filepath, "masks", mask_filename) # Add the current filename for the semantic segmentation ground truth mask to the row-variable
+        mask = np.asarray(Image.open(row["mask_file"]))                                     # Read the ground truth label mask image
+        if len(np.unique(mask)) <= 1: continue                                              # Apparently a test mask had only 0's, even though the corresponding input image was ordinary
         width_img, height_img = Image.open(row["img_file"]).size                            # Get the image size of the img_file
-        width_mask, height_mask = Image.open(row["mask_file"]).size                         # Get the size of the ground truth mask
+        width_mask, height_mask = mask.shape                                                # Get the size of the ground truth mask
         if not all([width_img==width_mask, height_img==height_mask]): continue              # The image and mask have to be of the same size
         current_pair = {"file_name": row["img_file"],                                       # Initiate the dict of the current image with the full filepath + filename
                         "height": height_img,                                               # Write the image height
@@ -58,7 +60,7 @@ def register_vitrolife_data_and_metadata_func(debugging=False):
         MetadataCatalog.get("vitrolife_dataset_{:s}".format(split_mode)).set(stuff_classes=class_labels,
                                                                             stuff_colors = stuff_colors,
                                                                             stuff_dataset_id_to_contiguous_id = stuff_id,
-                                                                            ignore_label=255,
+                                                                            ignore_label=0,                         # The model won't be rewarded for predicting the background pixels
                                                                             evaluator_type="sem_seg",
                                                                             num_files_in_dataset=len(DatasetCatalog["vitrolife_dataset_{:}".format(split_mode)]()))
     assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"    # Assuring the dataset has been registered correctly

@@ -32,9 +32,10 @@ def createVitrolifeConfiguration(FLAGS):
     cfg = get_cfg()                                                                         # Get the default configuration from detectron2.
     add_deeplab_config(cfg)                                                                 # Add some deeplab (i.e. sem_seg) config values
     add_mask_former_config(cfg)                                                             # Add some default values used for semantic segmentation to the config and choose datasetmapper
-    cfg.merge_from_file(os.path.join(config_folder, "swin", "maskformer_swin_small_bs16_160k.yaml"))    # Merge with the config for the small swin transformer
-    cfg.merge_from_file(os.path.join(config_folder, "maskformer_R50_bs16_160k.yaml"))       # Merge with the small maskformer config
-    cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset
+    if FLAGS.use_transformer_head: cfg.merge_from_file(os.path.join(config_folder, "swin", "maskformer_swin_small_bs16_160k.yaml")) # If the user chose the transformer head, merge with the config for the small swin transformer
+    if FLAGS.per_pixel_baseline: cfg.merge_from_file(os.path.join(config_folder, "per_pixel_baseline_R50_bs16_160k.yaml"))          # If the user chose standard per_pixel calculations, merge with the per_pixel_baseline config
+    else: cfg.merge_from_file(os.path.join(config_folder, "maskformer_R50_bs16_160k.yaml")) # Otherwise, merge with the small maskformer config
+    cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset. This is the config selecting that we use the ADE20K dataset
     cfg.SOLVER.BASE_LR = FLAGS.learning_rate if "LEARNING_RATE" in key_list else 1e-3       # Starting learning rate
     cfg.SOLVER.IMS_PER_BATCH = FLAGS.batch_size if "BATCH_SIZE" in key_list else 1          # Batch size used when training => batch_size pr GPU = batch_size // num_gpus
     cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e4)            # Maximum number of iterations to train for
