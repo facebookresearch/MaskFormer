@@ -2,7 +2,6 @@ import os                                                                       
 import torch                                                                                # torch is implemented to check if a GPU is available
 import numpy as np
 from sys import path as sys_PATH                                                            # Import the PATH variable
-from register_vitrolife_dataset import register_vitrolife_data_and_metadata_func            # Import function to register the vitrolife datasets in Detectron2 
 from detectron2.data import MetadataCatalog                                                 # Catalog containing metadata for all datasets available in Detectron2
 from detectron2.config import get_cfg                                                       # Function to get the default configuration from Detectron2
 from detectron2.projects.deeplab import add_deeplab_config                                  # Used to merge the default config with the deeplab config before training
@@ -21,11 +20,6 @@ def accumulate_keys(dct):
 
 # Define a function to create a custom configuration in the chosen config_dir and takes a namespace option
 def createVitrolifeConfiguration(FLAGS):
-    # Register the vitrolife datasets
-    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)
-    assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"
-
-
     # Locate the folder containing other configurations
     MaskFormer_dir = [x for x in sys_PATH if x.endswith("MaskFormer")][0]
     config_folder = os.path.join(MaskFormer_dir, "configs", "ade20k-150")
@@ -49,10 +43,10 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.SOLVER.WEIGHT_DECAY = float(2e-5)                                                   # A small lambda value for the weight decay
     cfg.TEST.AUG.FLIP = False                                                               # No random flipping or augmentation used for inference
     cfg.MODEL.PANOPTIC_FPN.COMBINE.ENABLED = False                                          # Disable the panoptic head during inference
-    cfg.DATALOADER.NUM_WORKERS = FLAGS.Num_workers if "NUM_WORKERS" in key_list else 2      # Set the number of workers to only 2
-    cfg.INPUT.CROP.ENABLED =  FLAGS.Crop_Enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
+    cfg.DATALOADER.NUM_WORKERS = FLAGS.num_workers if "NUM_WORKERS" in key_list else 2      # Set the number of workers to only 2
+    cfg.INPUT.CROP.ENABLED =  FLAGS.crop_enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
     cfg.MODEL.DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'                       # Assign the device on which the model should run
-    cfg.MODEL.RESNETS.DEPTH = FLAGS.Resnet_Depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
+    cfg.MODEL.RESNETS.DEPTH = FLAGS.resnet_depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
     cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 2                                                   # Set the weight for the dice loss
     cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 20                                                  # Set the weight for the mask predictive loss
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
@@ -64,15 +58,15 @@ def createVitrolifeConfiguration(FLAGS):
             cfg.DATASETS.TEST = ("vitrolife_dataset_val",)                                  # ... define the validation dataset by using the config as a CfgNode 
             cfg.MODEL.SEM_SEG_HEAD.NUM_CLASSES = len(MetadataCatalog[cfg.DATASETS.TEST[0]].stuff_classes)   # Assign the number of classes for the model to segment
             cfg.INPUT.FORMAT = "BGR"                                                        # The input format is set to be BGR, like the visualization method
-            cfg.INPUT.MIN_SIZE_TRAIN = FLAGS.Img_size_min if "IMG_SIZE_MIN" in key_list else 500    # The minimum size length for one side of the training images
-            cfg.INPUT.MAX_SIZE_TRAIN = FLAGS.Img_size_max if "IMG_SIZE_MAX" in key_list else 500    # The maximum size length for one side of the training images
-            cfg.INPUT.MIN_SIZE_TEST = FLAGS.Img_size_min if "IMG_SIZE_MIN" in key_list else 500     # The minimum size length for one side of the validation images
-            cfg.INPUT.MAX_SIZE_TEST = FLAGS.Img_size_max if "IMG_SIZE_MAX" in key_list else 500     # The maximum size length for one side of the validation images
+            cfg.INPUT.MIN_SIZE_TRAIN = FLAGS.img_size_min if "IMG_SIZE_MIN" in key_list else 500    # The minimum size length for one side of the training images
+            cfg.INPUT.MAX_SIZE_TRAIN = FLAGS.img_size_max if "IMG_SIZE_MAX" in key_list else 500    # The maximum size length for one side of the training images
+            cfg.INPUT.MIN_SIZE_TEST = FLAGS.img_size_min if "IMG_SIZE_MIN" in key_list else 500     # The minimum size length for one side of the validation images
+            cfg.INPUT.MAX_SIZE_TEST = FLAGS.img_size_max if "IMG_SIZE_MAX" in key_list else 500     # The maximum size length for one side of the validation images
             cfg.MODEL.PIXEL_MEAN = [100.15, 102.03, 103.89]                                 # Write the correct image mean value for the entire vitrolife dataset
             cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                     # Write the correct image standard deviation value for the entire vitrolife dataset
             cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog[cfg.DATASETS.TRAIN[0]].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
             cfg.TEST.EVAL_PERIOD = MetadataCatalog[cfg.DATASETS.TEST[0]].num_files_in_dataset           # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
-            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([250, cfg.SOLVER.MAX_ITER]) for x in range(100)],1).tolist()    # The iterations where the learning rate will be lowered with a factor of "gamma"
+            # cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([500, cfg.SOLVER.MAX_ITER]) for x in range(500)],1).tolist()    # The iterations where the learning rate will be lowered with a factor of "gamma"
             cfg.SOLVER.GAMMA = 0.25                                                         # After every "step" iterations the learning rate will be updated, as new_lr = old_lr*gamma
             cfg.OUTPUT_DIR = cfg.OUTPUT_DIR.replace("output_", "output_vitrolife_")         # Insert the 'vitrolife' to the output directory, if using the vitrolife dataset
             config_name = "vitrolife_" + config_name                                        # Prepend the config name with "vitrolife"

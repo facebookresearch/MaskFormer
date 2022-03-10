@@ -26,19 +26,20 @@ try:
         return fig                                                                  # Return the figure handle
 except: pass
 
-MetadataCatalog["ade20k_sem_seg_train"].stuff_classes
+
 # Define function to apply a colormap on the images
 def apply_colormap(mask, config):
-    colors_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_colors)
-    if "vitrolife" in config.DATASETS.TEST[0].lower():
-        labels_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_dataset_id_to_contiguous_id.values())
-    else: labels_used = list(range(1, 1+len(MetadataCatalog["ade20k_sem_seg_train"].stuff_classes)))
-    color_array = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
-    for label_id, label in enumerate(labels_used):
-        color_array[mask == label] = colors_used[label_id]
-    return color_array
+    colors_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_colors)       # Read the colors used in the Metadatacatalog. If no colors are assigned, random colors are used
+    if "vitrolife" in config.DATASETS.TEST[0].lower():                              # If we are working on the vitrolife dataset ...
+        labels_used = list(MetadataCatalog[config.DATASETS.TEST[0]].stuff_dataset_id_to_contiguous_id.values()) # ... labels_used will be read from the MetadataCatalog
+    else: labels_used = list(range(1, 1+len(MetadataCatalog["ade20k_sem_seg_train"].stuff_classes)))    # Else, labels is just 1:num_classes
+    color_array = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)       # Allocate a RGB 3D array of zeros
+    for label_idx, label in enumerate(labels_used):                                 # Loop through each label from the labels_used found from the MetadataCatalog
+        color_array[mask == label] = colors_used[label_idx]                         # Assign all pixels in the mask with the current label_value the colors_used[idx] value
+    return color_array                                                              # Return the colored mask
 
 
+# Define a function to extract numbers from a string
 def extractNumbersFromString(str, dtype=float, numbersWanted=1):
     try: vals = dtype(str)                                                          # At first, simply try to convert the string into the wanted dtype
     except:                                                                         # Else, if that is not possible ...
@@ -55,7 +56,7 @@ def extractNumbersFromString(str, dtype=float, numbersWanted=1):
 
 # Define a function to put the latest saved model as the model_weights in the config before creating the dataloader
 def putModelWeights(config):
-    model_files = [x for x in os.listdir(config.OUTPUT_DIR) if "model" in x and x.endswith(".pth") and not np.isnan(extractNumbersFromString(x))]   # Find all saved model checkpoints
+    model_files = [x for x in os.listdir(config.OUTPUT_DIR) if "model" in x.lower() and x.endswith(".pth") and not np.isnan(extractNumbersFromString(x))]   # Find all saved model checkpoints
     if len(model_files) >= 1:                                                       # If any model checkpoint is found, 
         iteration_numbers = [extractNumbersFromString(x, int) for x in model_files] # Find the iteration numbers for when they were saved
         latest_iteration_idx = np.argmax(iteration_numbers)                         # Find the index of the model checkpoint with the latest iteration number
@@ -66,40 +67,23 @@ def putModelWeights(config):
     return config                                                                   # Return the updated config
 
 
-# Define a function to convert a dictionary with filenames into a img_sem_seg batched dictionary like the output from the dataloader
-def filename_dict_to_datalist(filename_dict):
-    dataset_list = list()
-    for img_path, y_true_path, PN, img_info in zip(filename_dict["image"], filename_dict["sem_seg"], filename_dict["PN"], filename_dict["image_custom_info"]):
-        current_files_dict = {}
-        current_files_dict["image"] = torch.permute(torch.from_numpy(cv2.imread(img_path, cv2.IMREAD_COLOR)), (2,0,1))
-        current_files_dict["sem_seg"] = torch.from_numpy(cv2.imread(y_true_path, cv2.IMREAD_GRAYSCALE))
-        current_files_dict["PN"] = PN
-        current_files_dict["image_custom_info"] = img_info
-        dataset_list.append(current_files_dict)
-    return dataset_list
-
-
 # Define a function to predict some label-masks for the dataset
-def create_batch_Img_ytrue_ypred(config, data_split, FLAGS, filename_dict):
-    config = putModelWeights(config)
-    predictor = DefaultPredictor(cfg=config)
-    Softmax_module = nn.Softmax(dim=2)
-    if filename_dict == None:
-        if "vitrolife" in FLAGS.dataset_name.lower():
-            dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)  # Here debugging just means that only 10 samples will be collected
-        else:
-            dataset_dicts = DatasetCatalog.get("ade20k_sem_seg_{:s}".format(data_split))
-        dataloader = build_detection_train_loader(dataset_dicts, mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=FLAGS.num_images)
-        data_batch = next(iter(dataloader))
-    else:
-        data_batch = filename_dict_to_datalist(filename_dict)
-    filename_dict = {"image": list(), "sem_seg": list(), "PN": list(), "image_custom_info": list()}
-    img_ytrue_ypred = {"input": list(), "y_pred": list(), "y_true": list(), "PN": list()}
-    for data in data_batch:
+def create_batch_img_ytrue_ypred(config, data_split, FLAGS, data_batch=None):
+    config = putModelWeights(config)                                                # Change the config and append the latest model as the used checkpoint
+    predictor = DefaultPredictor(cfg=config)                                        # Create a default predictor instance
+    Softmax_module = nn.Softmax(dim=2)                                              # Create a module to compute the softmax value along the final, channel, dimension of the predicted images
+    if data_batch == None:                                                          # If no batch with data was send to the function ...
+        if "vitrolife" in FLAGS.dataset_name.lower():                               # ... and if we are using the vitrolife dataset
+            dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)  # ... the list of dataset_dicts from vitrolife is computed. Here debugging just means that only 10 samples will be collected
+        else: dataset_dicts = DatasetCatalog.get("ade20k_sem_seg_{:s}".format(data_split))  # Else we use the ADE20K dataset
+        dataloader = build_detection_train_loader(dataset_dicts,mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=FLAGS.num_images)   # Create a dataloader with the list of dictionaries
+        data_batch = next(iter(dataloader))                                         # Extract the next batch from the dataloader
+    img_ytrue_ypred = {"input": list(), "y_pred": list(), "y_true": list(), "PN": list()}   # Initiate a dictionary to store the input images, ground truth masks and the predicted masks
+    for data in data_batch:                                                         # Iterate over each data sample in the batch from the dataloader
         img = torch.permute(data["image"], (1,2,0)).numpy()                         # Input image [H,W,C]
         y_true = data["sem_seg"].numpy()                                            # Ground truth label mask [H,W]
         y_true_col = apply_colormap(mask=y_true, config=config)                     # Ground truth color mask
-        out = predictor.__call__(img)                                               # Predicted output dictionary
+        out = predictor.__call__(img)                                               # Predicted output dictionary. The call function needs images in BGR format.
         out_img = torch.permute(out["sem_seg"], (1,2,0))                            # Predicted output image [H,W,C]
         out_img_softmax = Softmax_module(out_img)                                   # Softmax of predicted output image
         y_pred = torch.argmax(out_img_softmax,2).cpu()                              # Predicted output image [H,W]
@@ -108,14 +92,9 @@ def create_batch_Img_ytrue_ypred(config, data_split, FLAGS, filename_dict):
         img_ytrue_ypred["input"].append(img)                                        # Append the input image to the dictionary
         img_ytrue_ypred["y_true"].append(y_true_col)                                # Append the ground truth to the dictionary
         img_ytrue_ypred["y_pred"].append(y_pred_col)                                # Append the predicted mask to the dictionary
-        # Append the filenames to the filename_list
-        filename_dict["image"].append(data["file_name"])                            # ... the current image filename is entered
-        filename_dict["sem_seg"].append(data["sem_seg"])                            # ... the current ground truth filename is entered
         if "vitrolife" in FLAGS.dataset_name.lower():                               # If we are visualizing the vitrolife dataset
-            filename_dict["PN"].append(img_ytrue_ypred["PN"][-1])                   # ... and the current number of PN is entered
             img_ytrue_ypred["PN"].append(int(data["image_custom_info"]["PN_image"]))# Read the true number of PN on the current image
-            filename_dict["image_custom_info"].append(data["image_custom_info"])    # Add the custom info with the PN to the dictionary
-    return img_ytrue_ypred, filename_dict
+    return img_ytrue_ypred, data_batch
 
 
 # Define function to plot the images
@@ -125,8 +104,8 @@ def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0
     before_train = True if filename_dict == None and data_split != "test" else False    # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
     
     # Extract information about the dataset used
-    img_ytrue_ypred, filename_dict = create_batch_Img_ytrue_ypred(config=config,    # Create the batch of images that needs to be visualized
-        data_split=data_split, FLAGS=FLAGS, filename_dict=filename_dict)            # And return the images in the filename_dict dictionary
+    img_ytrue_ypred, filename_dict = create_batch_img_ytrue_ypred(config=config,    # Create the batch of images that needs to be visualized
+        data_split=data_split, FLAGS=FLAGS, data_batch=filename_dict)               # And return the images in the filename_dict dictionary
     num_rows, num_cols = 3, FLAGS.num_images                                        # The figure will have three rows (input, y_pred, y_true) and one column per image
     fig = plt.figure(figsize=figsize)                                               # Create the figure object
     row = 0                                                                         # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)

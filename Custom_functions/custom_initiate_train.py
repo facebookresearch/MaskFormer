@@ -21,7 +21,9 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
 from datetime import datetime                                               # Used to get the current date and time when starting the process
+from register_vitrolife_dataset import register_vitrolife_data_and_metadata_func    # Import function to register the vitrolife datasets in Detectron2 
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
+from detectron2.data import MetadataCatalog                                 # Catalog containing metadata for all datasets available in Detectron2
 from detectron2.engine import default_argument_parser                       # Default argument_parser object
 from custom_train_func import launch_custom_training                        # Function to launch the training with custom dataset
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
@@ -42,9 +44,18 @@ def str2bool(v):
     elif v.lower() in ('no', 'false', 'f', 'n', '0'): return False          # If any signs of the user saying no is present, the boolean value False is returned
     else: raise argparse.ArgumentTypeError('Boolean value expected.')       # If the user gave another input an error is raised
 
+# Alter the FLAGS input arguments
+def changeFLAGS(FLAGS):
+    if FLAGS.num_gpus != FLAGS.gpus_used: FLAGS.num_gpus = FLAGS.gpus_used  # As there are two input arguments where the number of GPUs can be assigned, the gpus_used argument is superior
+    if FLAGS.eval_only != FLAGS.inference_only: FLAGS.eval_only = FLAGS.inference_only  # As there are two inputs where "eval_only" can be set, inference_only is the superior
+    if FLAGS.model_weights != "": assert os.path.isfile(FLAGS.model_weights), "Model_weights input argument has to be provided as a path to a model checkpoint"
+    return FLAGS
+
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
 def main(FLAGS):
-    assign_free_gpus(max_gpus=1)                                            # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
+    assign_free_gpus(max_gpus=FLAGS.num_gpus)                               # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
+    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)
+    assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"
     cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Register the vitrolife datasets and create the custom configuration
 
     # Visualize some random images
@@ -75,22 +86,24 @@ if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
     start_time = datetime.now().strftime("%H_%M_%d%b%Y").upper()
-    parser.add_argument("--dataset_name", type=str, default="ade20k", help="Which datasets to train on. Choose between [ADE20K, Vitrolife]. Default: Vitrolife")
+    parser.add_argument("--dataset_name", type=str, default="vitrolife", help="Which datasets to train on. Choose between [ADE20K, Vitrolife]. Default: Vitrolife")
     parser.add_argument("--output_dir_postfix", type=str, default=start_time, help="Filename extension to add to the output directory of the current process. Default: now: 'HH_MM_DDMMMYYYY'")
-    parser.add_argument("--Model_weights", type=str, default="", help="Path to the checkpoint [.pth, .pkl], to initialize model weights. If empty, initialize model weights randomly. Default: ''")
-    parser.add_argument("--Num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
-    parser.add_argument("--max_iter", type=int, default=int(2e1), help="Maximum number of iterations to train the model for. Default: 100")
-    parser.add_argument("--Img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
-    parser.add_argument("--Img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
-    parser.add_argument("--Resnet_Depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
+    parser.add_argument("--model_weights", type=str, default="", help="Path to the checkpoint [.pth, .pkl], to initialize model weights. If empty, initialize model weights randomly. Default: ''")
+    parser.add_argument("--num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
+    parser.add_argument("--max_iter", type=int, default=int(3e1), help="Maximum number of iterations to train the model for. Default: 100")
+    parser.add_argument("--img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
+    parser.add_argument("--img_size_max", type=int, default=500, help="The length of the largest size of the training images. Default: 500")
+    parser.add_argument("--resnet_depth", type=int, default=50, help="The depth of the feature extracting ResNet backbone. Possible values: [18,34,50,101] Default: 50")
     parser.add_argument("--batch_size", type=int, default=1, help="The batch size used for training the model. Default: 1")
     parser.add_argument("--num_images", type=int, default=5, help="The number of images to display. Only relevant if --display_images is true. Default: 5")
+    parser.add_argument("--gpus_used", type=int, default=1, help="The number of GPU's to use for training. Only applicable for training with ADE20K. This input argument deprecates the '--num-gpus' argument. Default: 1")
     parser.add_argument("--learning_rate", type=float, default=5e-3, help="The initial learning rate used for training the model. Default 1e-4")
-    parser.add_argument("--Crop_Enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
+    parser.add_argument("--crop_enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
+    parser.add_argument("--inference_only", type=str2bool, default=False, help="Whether or not training is skipped and only inference is run. This input argument deprecates the '--eval_only' argument. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
     parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Only applicable when using ADE20K dataset. Default: False")
     parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
-    FLAGS = main(FLAGS)
+    FLAGS = main(changeFLAGS(FLAGS))
 
