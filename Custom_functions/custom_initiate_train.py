@@ -102,7 +102,7 @@ if __name__ == "__main__":
     parser.add_argument("--inference_only", type=str2bool, default=False, help="Whether or not training is skipped and only inference is run. This input argument deprecates the '--eval_only' argument. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
     parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Only applicable when using ADE20K dataset. Default: False")
-    parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
+    parser.add_argument("--debugging", type=str2bool, default=False, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(changeFLAGS(FLAGS))
