@@ -47,7 +47,7 @@ def createVitrolifeConfiguration(FLAGS):
     cfg.INPUT.CROP.ENABLED =  FLAGS.crop_enabled if "CROP_ENABLED" in key_list else False   # We will not allow any cropping of the input images
     cfg.MODEL.DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'                       # Assign the device on which the model should run
     cfg.MODEL.RESNETS.DEPTH = FLAGS.resnet_depth if "RESNET_DEPTH" in key_list else 50      # Assign the depth of the backbone feature extracting model
-    cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 2                                                   # Set the weight for the dice loss
+    cfg.MODEL.MASK_FORMER.DICE_WEIGHT = 5                                                   # Set the weight for the dice loss
     cfg.MODEL.MASK_FORMER.MASK_WEIGHT = 20                                                  # Set the weight for the mask predictive loss
     # cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5                                           # Assign the threshold used for the model
     cfg.OUTPUT_DIR = os.path.join(MaskFormer_dir, "output_"+FLAGS.output_dir_postfix)       # Get MaskFormer directory and name the output directory
@@ -66,7 +66,7 @@ def createVitrolifeConfiguration(FLAGS):
             cfg.MODEL.PIXEL_STD = [57.32, 59.69, 61.93]                                     # Write the correct image standard deviation value for the entire vitrolife dataset
             cfg.SOLVER.CHECKPOINT_PERIOD = MetadataCatalog[cfg.DATASETS.TRAIN[0]].num_files_in_dataset  # Save a new model checkpoint after each epoch, i.e. after everytime the entire trainining set has been seen by the model
             cfg.TEST.EVAL_PERIOD = MetadataCatalog[cfg.DATASETS.TEST[0]].num_files_in_dataset           # Evaluation after each epoch. Thus in the logs it can be seen which iteration was "best" and then that checkpoint can be loaded later
-            # cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([500, cfg.SOLVER.MAX_ITER]) for x in range(500)],1).tolist()    # The iterations where the learning rate will be lowered with a factor of "gamma"
+            cfg.SOLVER.STEPS = np.subtract([int(x+1)*np.min([500, cfg.SOLVER.MAX_ITER]) for x in range(500)],1).tolist()    # The iterations where the learning rate will be lowered with a factor of "gamma"
             cfg.SOLVER.GAMMA = 0.25                                                         # After every "step" iterations the learning rate will be updated, as new_lr = old_lr*gamma
             cfg.OUTPUT_DIR = cfg.OUTPUT_DIR.replace("output_", "output_vitrolife_")         # Insert the 'vitrolife' to the output directory, if using the vitrolife dataset
             config_name = "vitrolife_" + config_name                                        # Prepend the config name with "vitrolife"
@@ -77,7 +77,7 @@ def createVitrolifeConfiguration(FLAGS):
         if FLAGS.debugging==True:                                                           # If we are debugging the model ...
             cfg.SOLVER.CHECKPOINT_PERIOD = int(np.subtract(cfg.SOLVER.MAX_ITER, 1))         # ... a checkpoint will only be saved after the final iteration
             cfg.TEST.EVAL_PERIOD = int(np.subtract(cfg.SOLVER.MAX_ITER, 1))                 # ... inference will only happen after the final iteration
-            cfg.DATASETS.TEST = cfg.DATASETS.TRAIN                                          # ... and inference will only happen on the training dataset
+            cfg.DATASETS.TEST = cfg.DATASETS.TRAIN                                          # ... and inference will happen on the training set
 
     # Write the new config as a .yaml file - it already does, in the output dir...
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)                                              # Create the output folder, if it doesn't already exist
