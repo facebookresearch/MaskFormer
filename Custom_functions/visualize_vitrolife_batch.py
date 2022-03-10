@@ -1,6 +1,5 @@
 import os
 import re
-import cv2
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
@@ -74,9 +73,11 @@ def create_batch_img_ytrue_ypred(config, data_split, FLAGS, data_batch=None):
     Softmax_module = nn.Softmax(dim=2)                                              # Create a module to compute the softmax value along the final, channel, dimension of the predicted images
     if data_batch == None:                                                          # If no batch with data was send to the function ...
         if "vitrolife" in FLAGS.dataset_name.lower():                               # ... and if we are using the vitrolife dataset
-            dataset_dicts = vitrolife_dataset_function(data_split, debugging=True)  # ... the list of dataset_dicts from vitrolife is computed. Here debugging just means that only 10 samples will be collected
+            dataset_dicts = vitrolife_dataset_function(data_split, debugging=FLAGS.debugging)   # ... the list of dataset_dicts from vitrolife is computed.
         else: dataset_dicts = DatasetCatalog.get("ade20k_sem_seg_{:s}".format(data_split))  # Else we use the ADE20K dataset
-        dataloader = build_detection_train_loader(dataset_dicts,mapper=DatasetMapper(putModelWeights(config), is_train=False), total_batch_size=FLAGS.num_images)   # Create a dataloader with the list of dictionaries
+        if len(dataset_dicts) < FLAGS.num_images: FLAGS.num_images = len(dataset_dicts)     # If we are debugging, we'll only return 2 images from vitrolife dataset, thus num_images must be lowered
+        dataloader = build_detection_train_loader(dataset_dicts, mapper=DatasetMapper(putModelWeights(config),  # Create a dataloader with the list of dictionaries using the default mapper (maps from filename ...
+        is_train=False), total_batch_size=FLAGS.num_images)                         #  to files, i.e. performs augmentation etc) specifying the batch_size to be drawn
         data_batch = next(iter(dataloader))                                         # Extract the next batch from the dataloader
     img_ytrue_ypred = {"input": list(), "y_pred": list(), "y_true": list(), "PN": list()}   # Initiate a dictionary to store the input images, ground truth masks and the predicted masks
     for data in data_batch:                                                         # Iterate over each data sample in the batch from the dataloader
@@ -94,20 +95,20 @@ def create_batch_img_ytrue_ypred(config, data_split, FLAGS, data_batch=None):
         img_ytrue_ypred["y_pred"].append(y_pred_col)                                # Append the predicted mask to the dictionary
         if "vitrolife" in FLAGS.dataset_name.lower():                               # If we are visualizing the vitrolife dataset
             img_ytrue_ypred["PN"].append(int(data["image_custom_info"]["PN_image"]))# Read the true number of PN on the current image
-    return img_ytrue_ypred, data_batch
+    return img_ytrue_ypred, data_batch, FLAGS
 
 
 # Define function to plot the images
-def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0.40, 0.75], filename_dict=None):
+def visualize_the_images(config, FLAGS, position=[0.55, 0.08, 0.40, 0.75], data_batch=None):
     # Get the datasplit and number of images to show
     data_split = "train" if FLAGS.debugging else config.DATASETS.TEST[0].split("_")[-1] # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
-    before_train = True if filename_dict == None and data_split != "test" else False    # The images are visualized before starting training, if the filename_dict is None. Else training has been completed.
+    before_train = True if data_batch == None and data_split != "test" else False       # The images are visualized before starting training, if the data_batch is None. Else training has been completed.
     
     # Extract information about the dataset used
-    img_ytrue_ypred, filename_dict = create_batch_img_ytrue_ypred(config=config,    # Create the batch of images that needs to be visualized
-        data_split=data_split, FLAGS=FLAGS, data_batch=filename_dict)               # And return the images in the filename_dict dictionary
+    img_ytrue_ypred, data_batch, FLAGS = create_batch_img_ytrue_ypred(config=config,# Create the batch of images that needs to be visualized
+            data_split=data_split, FLAGS=FLAGS, data_batch=data_batch)              # And return the images in the data_batch dictionary
     num_rows, num_cols = 3, FLAGS.num_images                                        # The figure will have three rows (input, y_pred, y_true) and one column per image
-    fig = plt.figure(figsize=figsize)                                               # Create the figure object
+    fig = plt.figure(figsize=(FLAGS.num_images*4.5, 8))                             # Create the figure object
     row = 0                                                                         # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)
     for key in img_ytrue_ypred.keys():                                              # Loop through all the keys in the batch dictionary
         if key.lower() not in ['input', 'y_true', 'y_pred']: continue               # If the key is not one of (input, y_pred, y_true), we simply skip to the next one
@@ -124,6 +125,6 @@ def visualize_the_images(config, FLAGS, figsize=(16, 8), position=[0.55, 0.08, 0
     fig.tight_layout()                                                              # Assures the subplots are plotted tight around each other
     figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "before" if before_train else "after")    # Create a name for the figure
     fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")  # Save the figure in the output directory
-    return fig, filename_dict, putModelWeights(config)                              # Return the figure, the dictionary with the used images and the updated config with a new model checkpoint
+    return fig, data_batch, putModelWeights(config), FLAGS                          # Return the figure, the dictionary with the used images and the updated config with a new model checkpoint
 
 

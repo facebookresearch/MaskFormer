@@ -47,26 +47,26 @@ def str2bool(v):
 # Alter the FLAGS input arguments
 def changeFLAGS(FLAGS):
     if FLAGS.num_gpus != FLAGS.gpus_used: FLAGS.num_gpus = FLAGS.gpus_used  # As there are two input arguments where the number of GPUs can be assigned, the gpus_used argument is superior
+    if "vitrolife" in FLAGS.dataset_name.lower() : FLAGS.num_gpus = 1       # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
     if FLAGS.eval_only != FLAGS.inference_only: FLAGS.eval_only = FLAGS.inference_only  # As there are two inputs where "eval_only" can be set, inference_only is the superior
     if FLAGS.model_weights != "": assert os.path.isfile(FLAGS.model_weights), "Model_weights input argument has to be provided as a path to a model checkpoint"
     return FLAGS
 
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
 def main(FLAGS):
-    assign_free_gpus(max_gpus=FLAGS.num_gpus)                               # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
-    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)
-    assert any(["vitrolife" in x for x in list(MetadataCatalog)]), "Datasets have not been registered correctly"
-    cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Register the vitrolife datasets and create the custom configuration
+    assign_free_gpus(max_gpus=FLAGS.num_gpus)                               # Assigning the running script to the selected amount of GPU's with the largest memory available
+    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)    # Register the vitrolife dataset
+    cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Create the custom configuration used to e.g. build the model
 
     # Visualize some random images
-    fig, filename_dict, cfg = visualize_the_images(config=cfg, FLAGS=FLAGS) # Visualize some segmentations on validation images before training
+    fig, data_batch, cfg, FLAGS = visualize_the_images(config=cfg, FLAGS=FLAGS) # Visualize some segmentations on validation images before training
     if FLAGS.display_images: fig.show()
 
     # Train the model
     launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training loop
 
     # Visualize the same images, now with a trained model
-    fig, filename_dict, cfg = visualize_the_images(config=cfg, FLAGS=FLAGS, filename_dict=filename_dict)    # Visualize the same images, from either train/val split after training
+    fig, data_batch, cfg, FLAGS = visualize_the_images(config=cfg, FLAGS=FLAGS, data_batch=data_batch)  # Visualize the same images, from either train/val split after training
     if FLAGS.display_images: fig.show()
 
     # Evaluation on the vitrolife test dataset. There is no ADE20K test dataset.
@@ -75,7 +75,7 @@ def main(FLAGS):
         FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
         cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
         launch_custom_training(args=FLAGS, config=cfg)                      # Launch the training (i.e. validation) loop
-        fig,_,_=visualize_the_images(config=cfg, FLAGS=FLAGS)               # Visualizing some new segmented test images
+        visualize_the_images(config=cfg, FLAGS=FLAGS)                       # Visualizing some new segmented test images. Doesn't care about the output
     
     # Display learning curves
     fig = show_history(config=cfg)                                          # Create and save learning curves
