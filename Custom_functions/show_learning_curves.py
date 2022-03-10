@@ -39,7 +39,7 @@ def load_metrics(config):
 
 
 # Function to display learning curves
-def show_history(config, display_fig=True):                                                             # Define a function to visualize the learning curves
+def show_history(config, FLAGS, display_fig=True):                                                      # Define a function to visualize the learning curves
     history = load_metrics(config=config)                                                               # Load the metrics into the history dictionary
     loss_total = [key for key in history.keys() if "total_loss" in key.lower()]                         # Find all keys with loss_ce
     loss_ce = [key for key in history.keys() if "loss_ce" in key.lower()]                               # Find all keys with loss_ce
@@ -51,6 +51,7 @@ def show_history(config, display_fig=True):                                     
     colors = ["blue", "red", "black", "green", "magenta", "cyan", "yellow"]                             # Colors for the line plots
     fig = plt.figure(figsize=(17,8))                                                                    # Create the figure
     n_rows, n_cols, ax_count = 2, (2,3), 0                                                              # Initiate values for the number of rows and columns
+    if FLAGS.use_per_pixel_baseline==True: n_rows = 1                                                       # If we train with the per_pixel_classification method, only CCE loss is calculated in the total_loss metric
     for row in range(n_rows):                                                                           # Loop through all rows
         for col in range(n_cols[row]):                                                                  # Loop through all columns in the current row
             plt.subplot(n_rows, n_cols[row], 1+row*n_cols[row]+col)                                     # Create a new subplot

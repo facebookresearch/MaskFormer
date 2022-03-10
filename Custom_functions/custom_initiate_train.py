@@ -49,7 +49,6 @@ def changeFLAGS(FLAGS):
     if FLAGS.num_gpus != FLAGS.gpus_used: FLAGS.num_gpus = FLAGS.gpus_used  # As there are two input arguments where the number of GPUs can be assigned, the gpus_used argument is superior
     if "vitrolife" in FLAGS.dataset_name.lower() : FLAGS.num_gpus = 1       # Working with the Vitrolife dataset can only be done using a single GPU for some weird reason...
     if FLAGS.eval_only != FLAGS.inference_only: FLAGS.eval_only = FLAGS.inference_only  # As there are two inputs where "eval_only" can be set, inference_only is the superior
-    if FLAGS.model_weights != "": assert os.path.isfile(FLAGS.model_weights), "Model_weights input argument has to be provided as a path to a model checkpoint"
     return FLAGS
 
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
@@ -78,7 +77,7 @@ def main(FLAGS):
         visualize_the_images(config=cfg, FLAGS=FLAGS)                       # Visualizing some new segmented test images. Doesn't care about the output
     
     # Display learning curves
-    fig = show_history(config=cfg)                                          # Create and save learning curves
+    fig = show_history(config=cfg, FLAGS=FLAGS)                             # Create and save learning curves
 
 
 # Running the main function
@@ -88,7 +87,6 @@ if __name__ == "__main__":
     start_time = datetime.now().strftime("%H_%M_%d%b%Y").upper()
     parser.add_argument("--dataset_name", type=str, default="vitrolife", help="Which datasets to train on. Choose between [ADE20K, Vitrolife]. Default: Vitrolife")
     parser.add_argument("--output_dir_postfix", type=str, default=start_time, help="Filename extension to add to the output directory of the current process. Default: now: 'HH_MM_DDMMMYYYY'")
-    parser.add_argument("--model_weights", type=str, default="", help="Path to the checkpoint [.pth, .pkl], to initialize model weights. If empty, initialize model weights randomly. Default: ''")
     parser.add_argument("--num_workers", type=int, default=1, help="Number of workers to use for training the model. Default: 1")
     parser.add_argument("--max_iter", type=int, default=int(3e1), help="Maximum number of iterations to train the model for. Default: 100")
     parser.add_argument("--img_size_min", type=int, default=500, help="The length of the smallest size of the training images. Default: 500")
@@ -101,10 +99,10 @@ if __name__ == "__main__":
     parser.add_argument("--crop_enabled", type=str2bool, default=False, help="Whether or not cropping is allowed on the images. Default: False")
     parser.add_argument("--inference_only", type=str2bool, default=False, help="Whether or not training is skipped and only inference is run. This input argument deprecates the '--eval_only' argument. Default: False")
     parser.add_argument("--display_images", type=str2bool, default=True, help="Whether or not some random sample images are displayed before training starts. Default: False")
-    parser.add_argument("--use_checkpoint", type=str2bool, default=False, help="Whether or not we are loading weights from a model checkpoint file before training. Only applicable when using ADE20K dataset. Default: False")
-    parser.add_argument("--use_transformer_head", type=str2bool, default=False, help="Whether or now we are using the extended swin_small_transformer head. Only applicable if '--per_pixel_baseline'=False. Default: False")
-    parser.add_argument("--per_pixel_baseline", type=str2bool, default=True, help="Whether or now we are using the per_pixel_calculating head. Alternative is the MaskFormer (or transformer) heads. Default: False")
-    parser.add_argument("--debugging", type=str2bool, default=False, help="Whether or not we are debugging the script. Default: False")
+    parser.add_argument("--use_checkpoint", type=str2bool, default=True, help="Whether or not we are loading weights from a model checkpoint file before training. Only applicable when using ADE20K dataset. Default: False")
+    parser.add_argument("--use_transformer_backbone", type=str2bool, default=True, help="Whether or now we are using the extended swin_small_transformer backbone. Only applicable if '--use_per_pixel_baseline'=False. Default: False")
+    parser.add_argument("--use_per_pixel_baseline", type=str2bool, default=False, help="Whether or now we are using the per_pixel_calculating head. Alternative is the MaskFormer (or transformer) heads. Default: False")
+    parser.add_argument("--debugging", type=str2bool, default=True, help="Whether or not we are debugging the script. Default: False")
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(changeFLAGS(FLAGS))
