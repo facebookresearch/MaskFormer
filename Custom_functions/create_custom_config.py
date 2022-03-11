@@ -47,6 +47,7 @@ def createVitrolifeConfiguration(FLAGS):
         if FLAGS.use_checkpoint==True:                                                      # If the user choose to start training from a earlier checkpoint ...
             cfg.MODEL.WEIGHTS = os.path.join(checkpoint_dir, "maskformer_per_pixel_baseline_checkpoint.pkl")    # Load the per_pixel classification checkpoint
     cfg.merge_from_file(os.path.join(config_folder, "Base-ADE20K-150.yaml"))                # Merge with the base config for ade20K dataset. This is the config selecting that we use the ADE20K dataset
+    if FLAGS.use_checkpoint == False: cfg.MODEL.WEIGHTS = ""                                # If the model must be trained without using earlier checkpoints, any earlier checkpoint must be removed...
     cfg.SOLVER.BASE_LR = FLAGS.learning_rate if "LEARNING_RATE" in key_list else 1e-3       # Starting learning rate
     cfg.SOLVER.IMS_PER_BATCH = FLAGS.batch_size if "BATCH_SIZE" in key_list else 1          # Batch size used when training => batch_size pr GPU = batch_size // num_gpus
     cfg.SOLVER.MAX_ITER = FLAGS.max_iter if "MAX_ITER" in key_list else int(2e4)            # Maximum number of iterations to train for

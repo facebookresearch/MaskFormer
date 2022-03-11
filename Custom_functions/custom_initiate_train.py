@@ -20,6 +20,7 @@ os.environ["DETECTRON2_DATASETS"] = dataset_dir
 
 # Import important libraries
 import argparse                                                             # Used to parse input arguments through command line
+from shutil import make_archive                                             # Used to zip the directory of the output folder
 from datetime import datetime                                               # Used to get the current date and time when starting the process
 from register_vitrolife_dataset import register_vitrolife_data_and_metadata_func    # Import function to register the vitrolife datasets in Detectron2 
 from create_custom_config import createVitrolifeConfiguration               # Function to create the custom configuration used for the training with Vitrolife dataset
@@ -29,7 +30,6 @@ from custom_train_func import launch_custom_training                        # Fu
 from visualize_vitrolife_batch import visualize_the_images                  # Import the function used for visualizing the image batch
 from GPU_memory_ranked_assigning import assign_free_gpus                    # Function to assign the running process to a specified number of GPUs ranked by memory availability
 from show_learning_curves import show_history                               # Function used to plot the learning curves for the given training
-
 
 # Function to rename the automatically created "inference" directory in the OUTPUT_DIR from "inference" to "validation" before performing actual inference with the test set
 def rename_output_inference_folder(config):                                 # Define a function that will only take the config as input
@@ -43,6 +43,7 @@ def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'): return True             # If any signs of the user saying yes is present, the boolean value True is returned
     elif v.lower() in ('no', 'false', 'f', 'n', '0'): return False          # If any signs of the user saying no is present, the boolean value False is returned
     else: raise argparse.ArgumentTypeError('Boolean value expected.')       # If the user gave another input an error is raised
+
 
 # Alter the FLAGS input arguments
 def changeFLAGS(FLAGS):
@@ -78,6 +79,10 @@ def main(FLAGS):
     
     # Display learning curves
     fig = show_history(config=cfg, FLAGS=FLAGS)                             # Create and save learning curves
+
+    # Zip the resulting output directory
+    make_archive(base_name=os.path.basename(cfg.OUTPUT_DIR), format="zip",  # Instantiate the zipping of the output directory  where the resulting zip file ...
+        root_dir=os.path.dirname(cfg.OUTPUT_DIR), base_dir=os.path.basename(cfg.OUTPUT_DIR))    # ... will include the output folder (not just the files from the folder)
 
 
 # Running the main function
