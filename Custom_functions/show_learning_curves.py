@@ -39,7 +39,7 @@ def load_metrics(config):
 
 
 # Function to display learning curves
-def show_history(config, FLAGS, display_fig=True):                                                      # Define a function to visualize the learning curves
+def show_history(config, FLAGS):                                                                        # Define a function to visualize the learning curves
     history = load_metrics(config=config)                                                               # Load the metrics into the history dictionary
     loss_total = [key for key in history.keys() if "total_loss" in key.lower()]                         # Find all keys with loss_ce
     loss_ce = [key for key in history.keys() if "loss_ce" in key.lower()]                               # Find all keys with loss_ce
@@ -74,6 +74,6 @@ def show_history(config, FLAGS, display_fig=True):                              
             plt.yscale('log')                                                                           # ... the y_scale will be logarithmic
     try: fig.savefig(os.path.join(config.OUTPUT_DIR, "Learning_curves.jpg"), bbox_inches="tight")       # Try and save the figure in the OUTPUR_DIR ...
     except: pass                                                                                        # ... otherwise simply skip saving the figure
-    if display_fig==False: plt.close(fig)                                                               # If the user chose to not display the figure, the figure is closed
     fig.tight_layout()                                                                                  # Make the figure tight_layout, which assures the subplots will be better spaced together
+    fig.show() if FLAGS.display_images==True else plt.close(fig)                                        # If the user chose to not display the figure, the figure is closed
     return fig                                                                                          # The figure handle is returned

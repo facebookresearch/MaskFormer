@@ -2,6 +2,7 @@ import os
 import glob
 import pandas as pd
 import numpy as np
+from random import shuffle
 from copy import deepcopy
 from PIL import Image
 from detectron2.data import DatasetCatalog, MetadataCatalog
@@ -47,10 +48,11 @@ def vitrolife_dataset_function(run_mode="train", debugging=False):
         count += 1                                                                          # Increase the sample counter 
         if count >= 5 and debugging==True: break                                            # When debugging, we will only use 5 samples in both train, val and test
     
-    assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
-    return img_mask_pair_list
+    assert len(img_mask_pair_list) >= 1, print("No image/mask pairs found in {:s} subfolders 'raw_image' and 'masks'".format(vitrolife_dataset_filepath))
+    shuffle(img_mask_pair_list)                                                             # Shuffle the list of dataset dictionaries, it works in_place, i.e. returns none and just shuffle the list object
+    return img_mask_pair_list                                                               # Return the shuffled list
 
-# Function to register the dataset and the meta dataset for each of the three splits, [train, val, test]
+# Function to register the dataset and the meta dataset for each of the three splitshuffleshuffles, [train, val, test]
 def register_vitrolife_data_and_metadata_func(debugging=False):
     class_labels = ["Background", "Well", "Zona", "Perivitelline space", "Cell", "PN"]
     stuff_id = {ii: ii for ii in range(len(class_labels))}

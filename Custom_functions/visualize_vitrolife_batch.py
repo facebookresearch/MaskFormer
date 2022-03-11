@@ -99,32 +99,36 @@ def create_batch_img_ytrue_ypred(config, data_split, FLAGS, data_batch=None):
 
 
 # Define function to plot the images
-def visualize_the_images(config, FLAGS, position=[0.55, 0.08, 0.40, 0.75], data_batch=None):
+def visualize_the_images(config, FLAGS, position=[0.55, 0.08, 0.40, 0.75], data_batches=None, model_has_trained=False):
     # Get the datasplit and number of images to show
-    data_split = "train" if FLAGS.debugging else config.DATASETS.TEST[0].split("_")[-1] # Split the dataset name at all the '_' and extract the final part, i.e. the datasplit
-    before_train = True if data_batch == None and data_split != "test" else False       # The images are visualized before starting training, if the data_batch is None. Else training has been completed.
-    
-    # Extract information about the dataset used
-    img_ytrue_ypred, data_batch, FLAGS = create_batch_img_ytrue_ypred(config=config,# Create the batch of images that needs to be visualized
-            data_split=data_split, FLAGS=FLAGS, data_batch=data_batch)              # And return the images in the data_batch dictionary
-    num_rows, num_cols = 3, FLAGS.num_images                                        # The figure will have three rows (input, y_pred, y_true) and one column per image
-    fig = plt.figure(figsize=(FLAGS.num_images*4.5, 8))                             # Create the figure object
-    row = 0                                                                         # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)
-    for key in img_ytrue_ypred.keys():                                              # Loop through all the keys in the batch dictionary
-        if key.lower() not in ['input', 'y_true', 'y_pred']: continue               # If the key is not one of (input, y_pred, y_true), we simply skip to the next one
-        for col, img in enumerate(img_ytrue_ypred[key]):                            # Loop through all available images in the dictionary
-            plt.subplot(num_rows, num_cols, row*num_cols+col+1)                     # Create the subplot instance
-            plt.axis("off")                                                         # Remove axis tickers
-            if "vitrolife" in FLAGS.dataset_name.lower():                           # If we are visualizing the vitrolife dataset
-                plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot with the number of PN
-            else: plt.title("{:s}".format(key))                                     # Otherwise simply put the key, i.e. either input, y_pred or y_true.
-            plt.imshow(img, cmap="gray")                                            # Display the image
-        row += 1                                                                    # Increase the row counter by 1
-    try: fig = move_figure_position(fig=fig, position=position)                     # Try and move the figure to the wanted position (only possible on home computer with a display)
-    except: pass                                                                    # Except, simply just let the figure retain the current position
-    fig.tight_layout()                                                              # Assures the subplots are plotted tight around each other
-    figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "before" if before_train else "after")    # Create a name for the figure
-    fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")  # Save the figure in the output directory
-    return fig, data_batch, putModelWeights(config), FLAGS                          # Return the figure, the dictionary with the used images and the updated config with a new model checkpoint
+    fig_list, data_batches_final = list(), list()                                   # Initiate the list to store the figures in
+    if data_batches==None: data_batches = [None, None, None]                        # If no previous data has been sent, it must be a list of None's...
+    for data_split, data_batch in zip(["train", "val", "test"], data_batches):      # Iterate through the three splits available
+        if "vitrolife" not in FLAGS.dataset_name.lower(): continue                  # Only vitrolife has a test dataset. ADE20K doesn't. 
+        # Extract information about the dataset used
+        img_ytrue_ypred, data_batch, FLAGS = create_batch_img_ytrue_ypred(config=config,# Create the batch of images that needs to be visualized
+                data_split=data_split, FLAGS=FLAGS, data_batch=data_batch)          # And return the images in the data_batch dictionary
+        num_rows, num_cols = 3, FLAGS.num_images                                    # The figure will have three rows (input, y_pred, y_true) and one column per image
+        fig = plt.figure(figsize=(FLAGS.num_images*4.5, 8))                         # Create the figure object
+        row = 0                                                                     # Initiate the row index counter (all manual indexing could have been avoided by having created img_ytrue_ypred as an OrderedDict)
+        for key in img_ytrue_ypred.keys():                                          # Loop through all the keys in the batch dictionary
+            if key.lower() not in ['input', 'y_true', 'y_pred']: continue           # If the key is not one of (input, y_pred, y_true), we simply skip to the next one
+            for col, img in enumerate(img_ytrue_ypred[key]):                        # Loop through all available images in the dictionary
+                plt.subplot(num_rows, num_cols, row*num_cols+col+1)                 # Create the subplot instance
+                plt.axis("off")                                                     # Remove axis tickers
+                if "vitrolife" in FLAGS.dataset_name.lower():                       # If we are visualizing the vitrolife dataset
+                    plt.title("{:s} with {:.0f} PN".format(key, img_ytrue_ypred["PN"][col]))# Create the title for the plot with the number of PN
+                else: plt.title("{:s}".format(key))                                 # Otherwise simply put the key, i.e. either input, y_pred or y_true.
+                plt.imshow(img, cmap="gray")                                        # Display the image
+            row += 1                                                                # Increase the row counter by 1
+        try: fig = move_figure_position(fig=fig, position=position)                 # Try and move the figure to the wanted position (only possible on home computer with a display)
+        except: pass                                                                # Except, simply just let the figure retain the current position
+        fig.tight_layout()                                                          # Assures the subplots are plotted tight around each other
+        figure_name = "Segmented_{:s}_data_samples_from_{:s}_training.jpg".format(data_split, "after" if model_has_trained else "before")   # Create a name for the figure
+        fig.savefig(os.path.join(config.OUTPUT_DIR, figure_name), bbox_inches="tight")  # Save the figure in the output directory
+        fig_list.append(fig)                                                        # Append the current figure to the list of figures
+        data_batches_final.append(data_batch)                                       # Append the current data_batch to the list of data_batches
+        fig.show() if FLAGS.display_images==True else plt.close(fig)                # Display the figure if that is the chosen option
+    return fig_list, data_batches_final, putModelWeights(config), FLAGS             # Return the figure, the dictionary with the used images and the updated config with a new model checkpoint
 
 

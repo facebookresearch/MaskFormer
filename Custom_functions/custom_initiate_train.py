@@ -54,38 +54,9 @@ def changeFLAGS(FLAGS):
 
 # Define the main function used to send input arguments. Just return the FLAGS arguments as a namespace variable
 def main(FLAGS):
-    assign_free_gpus(max_gpus=FLAGS.num_gpus)                               # Assigning the running script to the selected amount of GPU's with the largest memory available
-    register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)    # Register the vitrolife dataset
-    cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                         # Create the custom configuration used to e.g. build the model
+    return FLAGS
 
-    # Visualize some random images
-    fig, data_batch, cfg, FLAGS = visualize_the_images(config=cfg, FLAGS=FLAGS) # Visualize some segmentations on validation images before training
-    if FLAGS.display_images: fig.show()
-
-    # Train the model
-    launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training loop
-
-    # Visualize the same images, now with a trained model
-    fig, data_batch, cfg, FLAGS = visualize_the_images(config=cfg, FLAGS=FLAGS, data_batch=data_batch)  # Visualize the same images, from either train/val split after training
-    if FLAGS.display_images: fig.show()
-
-    # Evaluation on the vitrolife test dataset. There is no ADE20K test dataset.
-    if FLAGS.debugging == False and "vitrolife" in FLAGS.dataset_name.lower():  # Inference will only be performed if we are not debugging the model
-        rename_output_inference_folder(config=cfg)                          # Rename the "inference" folder in OUTPUT_DIR to "validation" before doing inference
-        FLAGS.eval_only = True                                              # Letting the model know we will only perform evaluation here
-        cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                     # The inference will be done on the test dataset
-        launch_custom_training(args=FLAGS, config=cfg)                      # Launch the training (i.e. validation) loop
-        visualize_the_images(config=cfg, FLAGS=FLAGS)                       # Visualizing some new segmented test images. Doesn't care about the output
-    
-    # Display learning curves
-    fig = show_history(config=cfg, FLAGS=FLAGS)                             # Create and save learning curves
-
-    # Zip the resulting output directory
-    make_archive(base_name=os.path.basename(cfg.OUTPUT_DIR), format="zip",  # Instantiate the zipping of the output directory  where the resulting zip file ...
-        root_dir=os.path.dirname(cfg.OUTPUT_DIR), base_dir=os.path.basename(cfg.OUTPUT_DIR))    # ... will include the output folder (not just the files from the folder)
-
-
-# Running the main function
+# Running the main function. By doing it like this the FLAGS will get out of the main function
 if __name__ == "__main__":
     # Create the input arguments with possible values
     parser = default_argument_parser()
@@ -111,4 +82,35 @@ if __name__ == "__main__":
     # Parse the arguments into a Namespace variable
     FLAGS = parser.parse_args()
     FLAGS = main(changeFLAGS(FLAGS))
+
+# 
+assign_free_gpus(max_gpus=FLAGS.num_gpus)                                   # Assigning the running script to the selected amount of GPU's with the largest memory available
+register_vitrolife_data_and_metadata_func(debugging=FLAGS.debugging)        # Register the vitrolife dataset
+cfg = createVitrolifeConfiguration(FLAGS=FLAGS)                             # Create the custom configuration used to e.g. build the model
+
+# Visualize some random images
+fig_list_before, data_batches, cfg, FLAGS = visualize_the_images(config=cfg, FLAGS=FLAGS)   # Visualize some segmentations on random images before training
+
+# Train the model
+launch_custom_training(args=FLAGS, config=cfg)                              # Launch the training loop
+
+# Visualize the same images, now with a trained model
+fig_list_after, data_batches, cfg, FLAGS = visualize_the_images(            # Visualize the same images ...
+    config=cfg,FLAGS=FLAGS, data_batches=data_batches, model_has_trained=True)  # ... now after training
+
+# Evaluation on the vitrolife test dataset. There is no ADE20K test dataset.
+if FLAGS.debugging == False and "vitrolife" in FLAGS.dataset_name.lower():  # Inference will only be performed if we are not debugging the model
+    rename_output_inference_folder(config=cfg)                              # Rename the "inference" folder in OUTPUT_DIR to "validation" before doing inference
+    FLAGS.eval_only = True                                                  # Letting the model know we will only perform evaluation here
+    cfg.DATASETS.TEST = ("vitrolife_dataset_test",)                         # The inference will be done on the test dataset
+    launch_custom_training(args=FLAGS, config=cfg)                          # Launch the training (i.e. inference) loop
+
+# Display learning curves
+fig_learn_curves = show_history(config=cfg, FLAGS=FLAGS)                    # Create and save learning curves
+
+# Zip the resulting output directory
+make_archive(base_name=os.path.basename(cfg.OUTPUT_DIR), format="zip",      # Instantiate the zipping of the output directory  where the resulting zip file ...
+    root_dir=os.path.dirname(cfg.OUTPUT_DIR), base_dir=os.path.basename(cfg.OUTPUT_DIR))    # ... will include the output folder (not just the files from the folder)
+
+
 
